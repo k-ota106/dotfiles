@@ -1,0 +1,268 @@
+#!/usr/bin/env bash
+
+FZF_SUGGESTION_NAME=${FZF_SUGGESTION_NAME:-.suggestion}
+
+# Command line suggestion system using fzf.
+#
+# fzf: https://github.com/junegunn/fzf
+#
+# Usage:
+#   $ fzf-suggestion [fzf option]
+#
+# Suggestion file order:
+#   1. $FZF_SUGGESTION_PRE
+#   2. ./${FZF_SUGGESTION_NAME}
+#   3. GIT_ROOT/${FZF_SUGGESTION_NAME}
+#   4. $HOME/${FZF_SUGGESTION_NAME}
+#   5. $FZF_SUGGESTION_POST
+#
+#   The default `$FZF_SUGGESTION_NAME` is `.suggestion`.
+#
+#   $FZF_SUGGESTION_PRE and $FZF_SUGGESTION_POST are 
+#   a space separted file name list.
+#
+# Suggestion file format:
+#   1. Text file
+#       * '^ *#': ignored 
+#       * '^ *$': ignored
+#       * others: used as suggestion 
+#   2. Executable file
+#       fzf-suggestion handles a stdout of the executable file as a text file.
+#
+#   If suggested line is a file, open it by pager (bat or less).
+#   Otherwise execute suggested line as shell command.
+#
+# To see key-mapping in fzf:
+#   * Press <C-h>
+#
+# Key-binding for bash:
+#
+#   ```bash
+#   __fzf_suggestion__() {
+#       ## Save the tty settings and restore them on exit.
+#       SAVED_TERM_SETTINGS="$(stty -g)"
+#       
+#       # Force the tty (back) into canonical line-reading mode.
+#       stty cooked echo
+#   
+#       # fzf-suggestion
+#       local output
+#       output=$(fzf-suggestion)
+#       if [ "$output" == "" ];then
+#           stty $SAVED_TERM_SETTINGS
+#           return
+#       fi
+#   
+#       # put stdout on the command line
+#       READLINE_LINE=${output#*$'\t'}
+#       if [ -z "$READLINE_POINT" ]; then
+#         echo "$READLINE_LINE"
+#       else
+#         READLINE_POINT=0x7fffffff
+#       fi
+#   
+#       stty $SAVED_TERM_SETTINGS
+#   }
+#   
+#   if [[ $- == *i* ]];then
+#       bind -m emacs-standard -x '"\C-o": __fzf_suggestion__'
+#       bind -m vi-command -x '"\C-o": __fzf_suggestion__'
+#       bind -m vi-insert -x '"\C-o": __fzf_suggestion__'
+#   fi
+#   ```bash
+#
+# Key-binding for zsh:
+#
+#   ```zsh
+#   fzf-suggestion-widget() {
+#     local selected num
+#     setopt localoptions noglobsubst noposixbuiltins pipefail no_aliases 2> /dev/null
+#     selected=( $(fzf-suggestion) )
+#     local ret=$?
+#     LBUFFER=$selected
+#     zle reset-prompt
+#     return $ret
+#   }
+#   zle     -N   fzf-suggestion-widget
+#   bindkey '^O' fzf-suggestion-widget
+#   ```
+
+
+# paging using bat or less 
+_fzf_suggestion_pager() {
+    title=$1
+    shift
+    if type bat > /dev/null 2>&1;then
+        bat --file-name=$title --paging=always $*
+    else
+        less $*
+    fi
+}
+
+# strip comment from selected line
+_fzf_suggestion_filter() {
+    sed -e 's/\([^\]\)#.*/\1/' -e 's/ *$//'
+}
+
+# <C-h>: print help
+_fzf_suggestion_help() {
+    cat <<EOF
+<C-h>: Print help.
+-- Prompt --
+<C-a>: Move to the beginning of line.
+<C-e>: Move to the end of line.
+<C-j>: Move to the bottom line.
+<C-k>: Move to the above line.
+-- Action --
+<C-r>: Execute command with additional input
+<C-i>: Execute arbitrary command. '{}' denotes a selected text.
+<C-p>: Print selected line and exit.
+Enter: Print selected line and exit.
+EOF
+}
+
+_fzf_suggestion_exit() {
+    read -p "Press <Enter> to continue."
+}
+
+# <C-r>: execute command with addtional input
+_fzf_suggestion_execute() {
+    exe=$(echo $* | _fzf_suggestion_filter)
+    if [ -f "$exe" -a ! -x "$exe" ];then
+        # regular file
+        _fzf_suggestion_pager $exe $exe
+    else
+        read -p "Exec: $exe " args
+        if [[ $args =~ ';' ]];then
+            echo "';' is not permitted for safety"
+            exit 1
+        fi
+        echo "Command: $exe $args"
+        eval $exe $args
+    fi
+    _fzf_suggestion_exit
+}
+
+# <C-i>: input arbitrary command
+_fzf_suggestion_input() {
+    args=$(echo $* | _fzf_suggestion_filter)
+    echo "{} = $args"
+    read -p "Input: " exe
+    if [[ $exe =~ ';' ]];then
+        echo "';' is not permitted for safety"
+        exit 1
+    fi
+
+    # replace {} to $args
+    cmd=
+    for i in $exe;do
+        if [ "$i" == "{}" ];then
+            cmd+=" $args"
+        else
+            cmd+=" $i"
+        fi
+    done
+    echo "Command: $cmd"
+    eval $cmd
+    _fzf_suggestion_exit
+}
+
+# Export functions to use in fzf.
+export SHELL=/bin/bash
+export -f _fzf_suggestion_help
+export -f _fzf_suggestion_pager
+export -f _fzf_suggestion_exit
+export -f _fzf_suggestion_execute
+export -f _fzf_suggestion_input
+export -f _fzf_suggestion_filter
+
+# Execute fzf 
+fzf_run() {
+    if [ ${FZF_SUGGESTION_SIMPLE:-0} -eq 1 ]; then
+        fzf $*
+    else
+        binds="ctrl-h:execute(_fzf_suggestion_help | _fzf_suggestion_pager HELP)"
+        binds+=",ctrl-r:execute(_fzf_suggestion_execute {} < /dev/tty > /dev/tty)"
+        binds+=",ctrl-i:execute(_fzf_suggestion_input   {} < /dev/tty)"
+        binds+=",ctrl-m:accept"
+        binds+=",ctrl-p:accept"
+
+        fzf --header="<C-h>:help, <C-r>:exec, <C-i>:input, Enter/<C-p>:print+exit, <C-c>:exit" \
+            --bind "$binds" $*
+    fi
+}
+
+# Find .suggestion files.
+# exit: .suggestion files are not found.
+# stdout: space separated .suggestion file name.
+search_suggestion_file() {
+    local target=
+
+    # 1. $FZF_SUGGESTION_PRE
+    target+=\ $FZF_SUGGESTION_PRE
+
+    # 2. current directory
+    target+=\ $FZF_SUGGESTION_NAME
+    
+    # 3. git root
+    git rev-parse > /dev/null 2>&1
+    if [ $? -eq 0 ];then
+        git_dir=$(git rev-parse --show-toplevel)
+        if [ -d "$git_dir" -a "$git_dir" != $PWD ];then
+            target+=" $git_dir/$FZF_SUGGESTION_NAME"
+        fi
+    else
+        git_dir=$PWD
+    fi
+
+    # 4. HOME
+    if [ "$git_dir" != $HOME ];then
+        target+=" $HOME/$FZF_SUGGESTION_NAME"
+    fi
+
+    # 5. $FZF_SUGGESTION_POST
+    target+=\ $FZF_SUGGESTION_POST
+
+    # check exist
+    local ans=
+    for i in $target;do
+        if [ -f $i ];then
+            ans+=\ $i
+        fi
+    done
+    
+    echo $ans
+}
+
+# Open .suggestion files.
+# * If executable, then execute it.
+# * Otherwise cat it.
+# args: .suggestion file (1 ore more)
+# stdout: contents of .suggestion files
+open_suggestion_file() {
+    for i in $*; do
+        if [ -x $i ];then
+            header=$(head -n1 $i)
+            if [ "${header:0:2}" == "#!" ];then
+                $(readlink -f $i)
+            else
+                cat $i
+            fi
+        else
+            cat $i
+        fi
+    done
+}
+
+################################### main
+
+suggestions=$(search_suggestion_file)
+if [ "$suggestions" = "" ];then
+    echo "ERROR: $FZF_SUGGESTION_NAME file not found"
+    exit 1
+fi
+open_suggestion_file $suggestions \
+    | grep -v '^ *#' \
+    | grep -v '^ *$' \
+    | fzf_run $* | _fzf_suggestion_filter
+

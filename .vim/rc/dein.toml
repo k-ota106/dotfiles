@@ -1,0 +1,50 @@
+################################ Yank History
+[[plugins]]
+repo = 'vim-scripts/YankRing.vim'
+hook_add = '''
+"let g:yankring_paste_n_akey = ''
+"let g:yankring_paste_v_akey = ''
+"let g:yankring_del_v_key = ''
+"vnoremap x "0x
+let g:yankring_warn_on_truncate = 0
+'''
+
+
+################################ Text alignment
+[[plugins]]
+ repo = 'junegunn/vim-easy-align'
+ hook_add = '''
+ " Start interactive EasyAlign in visual mode (e.g. vip<Enter>)
+ vmap <Enter> <Plug>(EasyAlign)
+ " Start interactive EasyAlign for a motion/text object (e.g. gaip)
+ nmap ga <Plug>(EasyAlign)
+ " type <C-X> to align by regular expression
+ " v: Verilog port list
+ " /: // comment
+ " ;: semi-colon
+ let g:easy_align_delimiters = {
+ \  'v': { 'align': 'lll', 'pattern': '\.\|(\|),\? *$',  'left_margin': 1, 'right_margin': 0, 'stick_to_left': 0, 'filter': 'g/^\s*\./' },
+ \  '/': {
+ \     'pattern':         '//\+\|/\*\|\*/',
+ \     'delimiter_align': 'l',
+ \     'ignore_groups':   ['!Comment'] },
+ \  ';': {
+ \     'pattern':         ';',
+ \     'delimiter_align': 'l' },
+ \  '(': {'pattern': '(', 'right_margin': 0},
+ \  ')': {'pattern': ')', 'left_margin': 0, 'right_margin': 0}
+ \  }
+'''
+
+#################################### fugitive (Git utility)
+[[plugins]]
+repo = 'tpope/vim-fugitive'
+ hook_add = '''
+function! IbexGitLab(opts)
+    let remote = substitute(a:opts['remote'], "\.git$", "", "")
+    let arg = remote . '/-/' . a:opts['type'] . '/' . a:opts['commit'] . '/' . a:opts['path']
+    return arg
+endfunction
+let g:fugitive_browse_handlers = ['IbexGitLab'] 
+'''
+
