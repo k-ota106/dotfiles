@@ -1,0 +1,107 @@
+############################################### fzf
+# https://qiita.com/kamykn/items/aa9920f07487559c0c7e
+#   git clone https://github.com/junegunn/fzf.git ~/.fzf
+#   ~/.fzf/install
+#
+# Commands:
+#   fbr         - checkout git branch
+#   fshow       - git commit browser
+#   fcd         - cd to selected directory
+#   fcdworktree - cd to selected git work tree
+#   fprev       - search files with preview
+#   fless       - search files and open using less
+#   fvim        - search files and open using vim
+#
+# Short-cut (defined in .fzf.bash)
+#   Ctrl-T : search file
+#   Ctrl-R : command history
+#   Alt-C  : cd directory
+
+if type rg > /dev/null 2>&1;then
+    export FZF_DEFAULT_COMMAND='rg --no-ignore --files --hidden --glob "!.git"'
+    export FZF_CTRL_T_COMMAND='rg --no-ignore --files --hidden --follow --glob "!.git/*"'
+fi
+if type bat > /dev/null 2>&1;then
+    export FZF_CTRL_T_OPTS='--preview "bat --wrap never --color=always --style=header,grid --line-range :100 {}"'
+else
+    export FZF_CTRL_T_OPTS='--preview "head -n 100 {}"'
+fi
+export FZF_DEFAULT_OPTS='--height 90% --reverse --border'
+
+#fbr - checkout git branch
+fbr() {
+  local branches branch
+  branches=$(git branch -vv) &&
+  branch=$(echo "$branches" | fzf +m) &&
+  git checkout $(echo "$branch" | awk '{print $1}' | sed "s/.* //")
+}
+
+
+# fshow - git commit browser
+fshow() {
+  git log --all --graph --color=always \
+      --format="%C(auto)%h%d %s %C(black)%C(bold)%cr" "$@" |
+  fzf --ansi --no-sort --reverse --tiebreak=index --bind=ctrl-s:toggle-sort \
+      --bind "ctrl-m:execute:
+                (grep -o '[a-f0-9]\{7\}' | head -1 |
+                xargs -I % sh -c 'git show --color=always % | less -R') << 'FZF-EOF'
+                {}
+FZF-EOF"
+}
+
+# fcd - cd to selected directory
+fcd() {
+  local dir
+  dir=$(find ${1:-.} -path '*/\.*' -prune \
+                  -o -type d -print 2> /dev/null | fzf +m) &&
+  pushd "$dir"
+}
+
+# fcdworktree - cd to selected git work tree
+fcdworktree() {
+    # カレントディレクトリがGitリポジトリ上かどうか
+    git rev-parse &>/dev/null
+    if [ $? -ne 0 ]; then
+        echo fatal: Not a git repository.
+        return
+    fi
+
+    local selectedWorkTreeDir=`git worktree list | fzf | awk '{print $1}'`
+
+    if [ "$selectedWorkTreeDir" = "" ]; then
+        # Ctrl-C.
+        return
+    fi
+
+    pushd "${selectedWorkTreeDir}"
+}
+
+# fprev - search fils with preview
+fprev () {
+    if type bat > /dev/null;then
+        fzf --preview='bat --wrap never -r 1:40 {} --color=always' $*
+    else
+        fzf --preview='head -n {}' $*
+    fi
+}
+
+# fless - brows files and open with less
+fless () {
+    if type bat > /dev/null;then
+        fprev --ansi --no-sort --reverse --tiebreak=index --bind=ctrl-s:toggle-sort --bind "ctrl-m:execute: bat --wrap never --paging=always {}" $*
+    else
+        fprev --ansi --no-sort --reverse --tiebreak=index --bind=ctrl-s:toggle-sort --bind "ctrl-m:execute: less -cRN {}" $*
+    fi
+}
+
+# fvim - brows files and open with vim
+fvim () {
+  fprev --ansi --no-sort --reverse --tiebreak=index --bind=ctrl-s:toggle-sort --bind "ctrl-m:execute: vim --not-a-term {}" $*
+}
+fview () {
+  fprev --ansi --no-sort --reverse --tiebreak=index --bind=ctrl-s:toggle-sort --bind "ctrl-m:execute: vim -R --not-a-term {}" $*
+}
+
+
+############################################### 
+
