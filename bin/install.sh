@@ -1,8 +1,13 @@
 #!/bin/bash
 
-# install awesome tools
+# Install awesome tools
+#
+# = Usage =
+# $ install.sh     # user install only  
+# $ install.sh all # install required package (sudo required) 
 #
 # = Required =
+# export HOME=
 # export http_proxy=
 # export https_proxy=
 #
@@ -15,11 +20,20 @@
 set -e
 
 cargo=cargo
-if [ -f /etc/redhat-release ];then
-    INSTALL="sudo -E yum install"
+if [ -z $(command -v sudo) ];then
+    sudo=""
 else
-    INSTALL="sudo -E apt-get install"
+    sudo="sudo -E"
 fi
+if [ -f /etc/redhat-release ];then
+    INSTALL="$sudo yum install -y"
+else
+    INSTALL="$sudo apt-get install -y"
+fi
+
+function install_package() {
+    $INSTALL git unzip wget curl pkg-config libssl-dev libncurses-dev python3 python3-pip
+}
 
 function is_not_installed() {
     mkdir -p $HOME/.local/bin
@@ -154,13 +168,26 @@ function update_vim() {
     make install
 }
 
+if [ $1 == all ];then
+    all=1
+else
+    all=0
+fi
+
+if [ $all -eq 1 ];then
+    install_package
+fi
+
 install_fzf
 install_nvim
 install_starship
 install_cargo
 install_cargo_tools
 install_deno
-install_yad
+
+if [ $all -eq 1 ];then
+    install_yad
+fi
 
 #update_git
 #update_vim
