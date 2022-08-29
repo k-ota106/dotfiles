@@ -2,7 +2,7 @@
 
 * bash 
 * bvi
-* cargo and awosome rust tools (ripgrep, bat, etc...)
+* cargo and awesome rust tools (ripgrep, bat, etc...)
 * deno
 * starship
 * tmux 2.9a or later
