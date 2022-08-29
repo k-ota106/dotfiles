@@ -1,0 +1,30 @@
+#!/bin/bash
+
+# vimのterminalから元vimのバッファで開く
+
+if [ -p /dev/stdin -o -f /dev/stdin ]; then
+    if [ -d ~/tmp ];then
+        src=$(readlink -f ~/tmp/stdout)
+        cat - > $src
+        echo -e "\x1b]51;[\"drop\",\"$src\"]\x07"
+    fi
+elif [ -f "$1" ];then
+    src=$(readlink -f $1)
+    echo -e "\x1b]51;[\"drop\",\"$src\"]\x07"
+else
+    vim $*
+fi
+
+#if [ -t 0 ]; then
+#    # 標準入力が端末の場合
+#    ....
+#elif [ -p /dev/stdin ]; then
+#    # 標準入力がパイプの場合
+#    ....
+#elif [ -f /dev/stdin ]; then
+#    # 標準入力が通常のファイルの場合 (シンボリックリンクでもリンク先が通常のファイルならOK)
+#    ....
+#else
+#    # 標準入力がそれ以外
+#    ....
+#fi

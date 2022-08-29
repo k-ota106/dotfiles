@@ -18,7 +18,7 @@ bind  '"\e[19~":"makers\n"'
 bind  '"\e[20~":"fcdworktree\n"'
 
 export SHELL=$(which bash)
-#source $HOME/.zshrc_bashrc
+source $HOME/.zshrc_bashrc
 alias ss='source $HOME/.bashrc'
 source_if $HOME/.fzf.bash
 source_if $HOME/.git-completion.bash
@@ -32,9 +32,9 @@ fi
 
 ########################################## starship
 if [ -n "$(command -v set_tmux_pane_pwd.sh)" ];then
-        starship_precmd_user_func="set_tmux_pane_pwd.sh"
+    starship_precmd_user_func="set_tmux_pane_pwd.sh"
 fi
 if [ -n "$(command -v starship)" ];then
-        eval "$(starship init bash)"
+    eval "$(starship init bash)"
 fi
 

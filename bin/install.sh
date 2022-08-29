@@ -9,7 +9,7 @@
 # = Maybe required =
 # sudo -E apt-get update  -y
 # sudo -E apt-get upgrade -y
-# sudo -E apt-get install -y wget curl pkg-config libssl-dev libncurses-dev python3 python3-pip
+# sudo -E apt-get install -y git unzip wget curl pkg-config libssl-dev libncurses-dev python3 python3-pip
 
 
 set -e
@@ -21,16 +21,20 @@ else
     INSTALL="sudo -E apt-get install"
 fi
 
+function is_not_installed() {
+    mkdir -p $HOME/.local/bin
+    test -z "$(command -v $* $HOME/.local/bin/$1 $HOME/.cargo/bin/$1)"
+}
+
 function install_fzf() {
-    if ! type fzf > /dev/null 2>&1 || test ! -e ~/.fzf ;then
-        git clone --depth 1 https://github.com/junegunn/fzf.git ~/.fzf
-        ~/.fzf/install --no-update-rc --no-bash --no-zsh
+    if is_not_installed fzf $HOME/.fzf/bin/fzf; then
+        git clone --depth 1 https://github.com/junegunn/fzf.git $HOME/.fzf
+        $HOME/.fzf/install --no-update-rc --no-bash --no-zsh
     fi
 }
 
 function install_nvim() {
-    mkdir -p $HOME/.local/bin
-    if ! type nvim > /dev/null 2>&1 ;then
+    if is_not_installed nvim ;then
         wget https://github.com/neovim/neovim/releases/download/v0.7.2/nvim.appimage
         chmod +x nvim.appimage
         ./nvim.appimage --appimage-extract
@@ -39,22 +43,21 @@ function install_nvim() {
 }
 
 function install_starship() {
-    mkdir -p $HOME/.local/bin
-    if ! type starship > /dev/null 2>&1 ;then
-        sh -c "$(curl -fsSL https://starship.rs/install.sh)" -- -b $HOME/.local/bin
+    if is_not_installed starship ;then
+        sh -c "$(curl -fsSL https://starship.rs/install.sh)" -- -b $HOME/.local/bin -y
     fi
 }
 
 function install_cargo() {
-    if ! type cargo > /dev/null 2>&1 || test ! -e ~/.cargo ;then
-        curl https://sh.rustup.rs -sSf | sh
-        cargo=~/.cargo/bin/cargo
+    if is_not_installed cargo ;then
+        bash  <(curl https://sh.rustup.rs -sSf) -y
+        cargo=$HOME/.cargo/bin/cargo
     
         if [ "$http_proxy" != "" ];then
             for proxy in http:$http_proxy https:$https_proxy;do
                 url=${proxy#*:}
                 if [ "$url" != "" ];then
-                    cat <<EOF >> ~/.cargo/config
+                    cat <<EOF >> $HOME/.cargo/config
 [${proxy%%:*}]
     proxy = "$url"
 EOF
@@ -67,51 +70,60 @@ EOF
 }
 
 function install_cargo_tools() {
-    if ! type $cargo > /dev/null 2>&1 ;then
+
+    if [ -f $HOME/.cargo/bin/cargo ];then
+        cargo=$HOME/.cargo/bin/cargo
+    else
+        cargo=cargo
+    fi
+
+    if is_not_installed $cargo ;then
         return
     fi
 
-    if ! type rg > /dev/null 2>&1 ;then
+    if is_not_installed rg;then
         $cargo install ripgrep
     fi
     
-    if ! type bat > /dev/null 2>&1 ;then
+    if is_not_installed bat;then
         $cargo install bat
     fi
     
-    if ! type fd > /dev/null 2>&1 ;then
+    if is_not_installed fd;then
         $cargo install fd-find
     fi
     
-    if ! type delta > /dev/null 2>&1 ;then
+    if is_not_installed delta;then
         $cargo install git-delta
     fi
 
-    if ! type makers > /dev/null 2>&1 ;then
+    if is_not_installed makers;then
         $cargo install cargo-make
     fi
 
-    if ! type rust-script > /dev/null 2>&1 ;then
+    if is_not_installed rust-script;then
         $cargo install rust-script
     fi
 
-    if ! type fx > /dev/null 2>&1 ;then
+    if is_not_installed fx;then
         $cargo install felix
     fi
 }    
 
 function install_deno() {
-    if ! type $cargo > /dev/null 2>&1 ;then
-        return
-    fi
-
-    if ! type deno > /dev/null 2>&1 ;then
-        $cargo install deno --locked
+    #if ! type $cargo > /dev/null 2>&1 ;then
+    #    return
+    #fi
+    #if ! type deno > /dev/null 2>&1 ;then
+    #    $cargo install deno --locked
+    #fi
+    if is_not_installed deno;then
+        curl -fsSL https://deno.land/install.sh | sh
     fi
 }
 
 function install_yad() {
-    if ! type deno > /dev/null 2>&1 ;then
+    if is_not_installed yad;then
         $INSTALL yad
     fi
 }
@@ -148,5 +160,7 @@ install_starship
 install_cargo
 install_cargo_tools
 install_deno
+install_yad
 
 #update_git
+#update_vim

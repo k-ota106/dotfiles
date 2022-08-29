@@ -1,0 +1,93 @@
+# common settings for zsh/bash
+
+umask 027
+
+source_if () {
+    if [ -f "$1" ];then
+        #echo "source $1"
+        source $1
+    fi
+}
+
+if [[ $- == *i* ]];then
+    stty stop undef # ignore ctrl-s for bash forward search
+fi
+
+export BAT_STYLE=changes,header,rule,numbers,snip
+export EDITOR=vim
+export LD_LIBRARY_PATH=$HOME/.local/lib:${LD_LIBRARY_PATH:+:${LD_LIBRARY_PATH}}
+export LESS="-i" # less option
+export MANPATH=$HOME/.local/share/man:$HOME/.fzf/man:$MANPATH
+export PYTHONSTARTUP=$HOME/.pythonstartup
+export RUBYOPT=-w
+
+export PATH=$HOME/.local/bin:$PATH
+
+export DENO_INSTALL="$HOME/.deno"
+export PATH="$DENO_INSTALL/bin:$PATH"
+
+#export MANPAGER='nvim --clean +Man\!'
+
+source_if ~/.cargo/env
+
+####################################################################################### alias
+
+alias h='history | uniq -f 2'
+alias us='export LANG=C'
+alias jpe='export LANG=ja_JP.eucJP'
+alias jp='export LANG=ja_JP.UTF-8'
+alias cp='cp -i'
+alias mv='mv -i'
+alias rm='rm -i'
+alias ls='ls -FC'
+alias la='ls -a'
+alias ll='ls -la'
+alias lt='ls -lart'
+alias l=lt
+alias pwd='echo $PWD'
+alias psme='ps aux | grep "^$USER "'
+alias grep='grep --color'
+alias g='grep -R --exclude={"*.git*","*.svn*","*.swp","tags"}'
+alias bvi="bvi -c 'set memmove'"
+alias ssh='ssh -Y2C'
+alias zstd_ultra='zstd --ultra -22 -T0'
+alias zstd_long='zstd --ultra -22 -T0 --long=31'
+alias pandoc_html='pandoc -s --self-contained --css=$HOME/.pandoc/css/github-markdown.css'
+alias reset_tty='stty sane && stty erase \^H && kill -WINCH $$'
+alias info='info --vi-keys'
+alias gpl='git pull'
+alias gbr='git branch -vvv'
+alias gst='git status'
+alias gls='git ls'
+alias gsm='git submodule'
+alias gg='git rev-parse --show-toplevel | xargs git grep'
+alias grs='git rev-parse --show-toplevel'
+alias gmk='makers --cwd $(git rev-parse --show-toplevel)'
+
+#alias hex2dec="ruby -e 'ARGV.each{|i| p i.hex}'"
+#alias hex2str="ruby -e 'puts ARGV.join.scan(/../).map{|i| i.hex}.pack(\"C*\")'"
+alias hd='od -t x1z -Ax'
+alias veritags="ctags --langmap=verilog:.v.sv.svh.vh --verilog-kinds=-cefnprt -R"
+alias svim="vim -u ~/.vimrc_simple"
+
+alias display422="display -sampling-factor 2x1 -interlace Plane "
+alias display444="display -sampling-factor 1x1 -interlace Plane "
+alias ffplay420="ffplay -f rawvideo -pix_fmt yuv420p "
+alias ffplay422="ffplay -f rawvideo -pix_fmt yuv422p "
+alias ffplay444="ffplay -f rawvideo -pix_fmt yuv444p "
+alias ffplay42010="ffplay -f rawvideo -pix_fmt yuv420p10le "
+alias ffplay42210="ffplay -f rawvideo -pix_fmt yuv422p10le "
+alias ffplay44410="ffplay -f rawvideo -pix_fmt yuv444p10le "
+
+if [ "$VIM_TERMINAL" != "" ];then
+    alias vim=tvim
+fi
+
+# git
+git_diff_so_fancy () { git diff $* | diff-so-fancy | less -crm; }
+git_copy_hash () { git log --graph --date-order -C -M --pretty=format:"<%h> %ad [%an] %d %s" --all --date=short | fzf | sed -e 's/>.*//' -e 's/.*<//' | winclip; }
+
+# gcc
+alias gcc_dbg='gcc -g -Wall -Wextra -Wformat=2 -Wstrict-aliasing=2 -Wcast-qual -Wcast-align -Wwrite-strings -Wconversion -Wfloat-equal -Wpointer-arith -Wswitch-enum -Wuninitialized -O -D_FORTIFY_SOURCE=1'
+alias valgrind_dbg='valgrind --leak-check=full --leak-resolution=high --show-reachable=yes --track-origins=yes'	# -v
+
