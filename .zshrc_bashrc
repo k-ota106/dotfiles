@@ -14,7 +14,7 @@ if [[ $- == *i* ]];then
 fi
 
 export BAT_STYLE=changes,header,rule,numbers,snip
-export EDITOR=vim
+export EDITOR=nvim
 export LD_LIBRARY_PATH=$HOME/.local/lib:${LD_LIBRARY_PATH:+:${LD_LIBRARY_PATH}}
 export LESS="-i" # less option
 export MANPATH=$HOME/.local/share/man:$HOME/.fzf/man:$MANPATH
@@ -69,7 +69,7 @@ alias gmk='makers --cwd $(git rev-parse --show-toplevel)'
 #alias hex2str="ruby -e 'puts ARGV.join.scan(/../).map{|i| i.hex}.pack(\"C*\")'"
 alias hd='od -t x1z -Ax'
 alias veritags="ctags --langmap=verilog:.v.sv.svh.vh --verilog-kinds=-cefnprt -R"
-alias svim="vim -u ~/.vimrc_simple"
+alias svim="nvim -u ~/.vimrc_simple"
 
 alias display422="display -sampling-factor 2x1 -interlace Plane "
 alias display444="display -sampling-factor 1x1 -interlace Plane "
