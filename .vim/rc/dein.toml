@@ -1,3 +1,20 @@
+################################ Colors
+[[plugins]]
+repo = 'vim-scripts/summerfruit256.vim'
+
+[[plugins]]
+repo = 'cocopon/iceberg.vim'
+hook_add = '''
+if !exists('g:vscode')
+  set background=dark
+  colorscheme iceberg
+  augroup MyColor
+  autocmd!
+  autocmd VimEnter * nested colorscheme iceberg
+  augroup END
+endif
+'''
+
 ################################ Yank History
 [[plugins]]
 repo = 'vim-scripts/YankRing.vim'
