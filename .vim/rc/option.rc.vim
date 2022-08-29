@@ -254,3 +254,16 @@ command! DiffOrig vert new | set bt=nofile | r ++edit # | 0d_ | diffthis | wincm
 " Copy quickfix to loclist
 command! CopyQflistToLoclist :call setloclist(0, [], ' ', {'items': get(getqflist({'items': 1}), 'items')})
 
+function! s:source_rc(rc_file_name)
+    let rc_file = fnamemodify(expand('<sfile>'), ':h') . '/' . a:rc_file_name
+    if filereadable(rc_file)
+        :execute 'source' rc_file
+    endif
+endfunction
+
+if has('nvim')
+    call s:source_rc('option_nvim.rc.vim')
+else
+    call s:source_rc('option_vim.rc.vim')
+endif
+
