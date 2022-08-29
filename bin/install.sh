@@ -168,7 +168,7 @@ function update_vim() {
     make install
 }
 
-if [ $1 == all ];then
+if [ "$1" == all ];then
     all=1
 else
     all=0
