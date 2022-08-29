@@ -7,8 +7,16 @@
 
 let mapleader = "\<Space>"
 
-" Open nvim from vim.
-command! -complete=file -nargs=* Nvim    :!unset VIM MYVIMRC VIMRUNTIME && nvim <args>
+if has('nvim')
+    let s:rc_root_dir = stdpath('config')
+else
+    if version < 802
+        finish
+    endif
+    let s:rc_root_dir = $HOME.'/.vim'
+    " Open nvim from vim.
+    command! -complete=file -nargs=* Nvim    :!unset VIM MYVIMRC VIMRUNTIME && nvim <args>
+endif
 
 """"""""""""""""""""""""""""""""""""""""""""""""" eda_utils
 " synchronize current line and loclist
@@ -18,11 +26,8 @@ nnoremap <silent> <leader>v :call eda_utils#ViewTable()<CR>
 
 
 """"""""""""""""""""""""""""""""""""""""""""""""" dein
-if version < 802
-    finish
-endif
 
-let s:dein_dir = $HOME . '/.vim/.cache/dein'
+let s:dein_dir = s:rc_root_dir . '/.cache/dein'
 let s:dein_repo_dir = s:dein_dir . '/repos/github.com/Shougo/dein.vim'
 
 if &runtimepath !~# '/dein.vim'
@@ -35,7 +40,10 @@ endif
 if dein#load_state(s:dein_dir)
     call dein#begin(s:dein_dir)
 
-    let s:rc_dir = $HOME . '/.vim/config'
+    let s:rc_dir = s:rc_root_dir . '/rc'
+    if !isdirectory(s:rc_dir)
+        call mkdir(s:rc_dir, 'p')
+    endif
     let s:toml = s:rc_dir . '/dein.toml'
     let s:lazy_toml = s:rc_dir . '/dein_lazy.toml'
     let s:ddu_toml = s:rc_dir . '/ddu.toml'

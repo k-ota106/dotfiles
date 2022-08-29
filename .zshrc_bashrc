@@ -20,6 +20,7 @@ export LESS="-i" # less option
 export MANPATH=$HOME/.local/share/man:$HOME/.fzf/man:$MANPATH
 export PYTHONSTARTUP=$HOME/.pythonstartup
 export RUBYOPT=-w
+export XDG_CONFIG_DIR=$HOME/.config
 
 export PATH=$HOME/.local/bin:$PATH
 
