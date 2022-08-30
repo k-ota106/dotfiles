@@ -25,7 +25,7 @@ set inccommand=nosplit
 :nnoremap <A-k> <C-w>k
 :nnoremap <A-l> <C-w>l
 
-" Paste in the terminal mode: <C-R>"<register>
+" Paste in the terminal mode: <C-R><register>
 tnoremap <expr> <C-R> '<C-\><C-N>"'.nr2char(getchar()).'pi'
 
 augroup nvimStartup
