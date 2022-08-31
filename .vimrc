@@ -12,9 +12,10 @@ function! s:source_rc(rc_file_name)
     endif
 endfunction
 
-call s:source_rc('init.rc.vim')
 call s:source_rc('option.rc.vim')
+call s:source_rc('option.private.vim')
 call s:source_rc('plugins.rc.vim')
+call s:source_rc('plugins.private.vim')
 
 if isdirectory(s:rc_root_dir.'/doc')
     execute ':helptags '.s:rc_root_dir.'/doc'

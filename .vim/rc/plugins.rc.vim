@@ -18,6 +18,38 @@ else
     command! -complete=file -nargs=* Nvim    :!unset VIM MYVIMRC VIMRUNTIME && nvim <args>
 endif
 
+""""""""""""""""""""""""""""""""""""""""""""""""" cargo-make
+" For makers (cargo-make), search Makefile.toml up to 4 parent directory.
+function! s:Makers(...)
+    :let c = 1
+    :let prefix = ""
+    :if a:0 > 0
+    :  let args = join(a:000, " ")
+    :else
+    :  let args = "default"
+    :endif
+    :while c <= 4
+    :    echom prefix
+    :  if filereadable(prefix . "Makefile.toml")
+    :    if c == 1
+    :      let cwd = ""
+    :    else
+    :      let cwd = "--cwd " . prefix
+    :    endif
+    :    let cmd = "Job makers " . cwd . " " . args
+    :    echom cmd
+    :    exe cmd
+    :    break
+    :  endif
+    :  if isdirectory(prefix . ".git")
+    :    break
+    :  endif
+    :  let prefix = "../" . prefix
+    :  let c += 1
+    :endwhile
+endfunction
+command! -nargs=* -complete=file  Makers call s:Makers(<f-args>)
+
 """"""""""""""""""""""""""""""""""""""""""""""""" eda_utils
 " synchronize current line and loclist
 nnoremap <silent> <leader>i :call eda_utils#ShowLoclistOnCurrLine()<CR>
@@ -47,10 +79,17 @@ if dein#load_state(s:dein_dir)
     let s:toml = s:rc_dir . '/dein.toml'
     let s:lazy_toml = s:rc_dir . '/dein_lazy.toml'
     let s:ddu_toml = s:rc_dir . '/ddu.toml'
+    let s:priv_toml = s:rc_dir . '/dein.private.toml'
+    let s:priv_lazy_toml = s:rc_dir . '/dein_lazy.private.toml'
+    let s:priv_ddu_toml = s:rc_dir . '/ddu.private.toml'
 
     call dein#load_toml(s:toml, {'lazy': 0})
     call dein#load_toml(s:lazy_toml, {'lazy' : 1})
     call dein#load_toml(s:ddu_toml, {'lazy' : 1})
+
+    call dein#load_toml(s:priv_toml, {'lazy': 0})
+    call dein#load_toml(s:priv_lazy_toml, {'lazy' : 1})
+    call dein#load_toml(s:priv_ddu_toml, {'lazy' : 1})
 
     call dein#end()
     call dein#save_state()

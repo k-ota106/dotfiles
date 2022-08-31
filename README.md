@@ -41,4 +41,13 @@ The user can extend some settings without editting dotfiles in this repository.
 * .zshrc -> .zshrc.private
 * .bashrc -> .zshrc.private
 * .zshrc_bashrc -> .zshrc_bashrc.private
-
+* .vimrc
+    * option.private.vim
+    * plugins.private.vim
+* .vim/rc/option.rc.vim
+    * option_nvim.private.vim
+    * option_vim.private.vim
+* .vim/rc/plugins.rc.vim
+    * dein.private.toml
+    * dein_lazy.private.toml
+    * ddu.private.toml

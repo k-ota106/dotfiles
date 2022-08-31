@@ -75,7 +75,7 @@ if isdirectory(s:backupdir)
     let &backupdir = s:backupdir
 endif
 
-" UTF-8 -> EUC-JP -> Shift-JIS
+" Check UTF-8 -> EUC-JP -> Shift-JIS in that order.
 set fileencoding=utf-8
 set fileencodings=utf-8,euc-jp,sjis
 set fileformats=unix,dos,mac
@@ -85,7 +85,7 @@ if !exists('g:vscode')
     endif
 endif
 
-" Syntax highlihg.
+" Eanble syntax highlihgt.
 if has("syntax")
 	syntax on
     set background=dark
@@ -248,6 +248,16 @@ augroup vimStartup
         \ | :vnoremap <silent> <C-p> p
 augroup END
 
+"============================================================================== Utility
+map <F7> <ESC>:execute "GGrep ".expand('<cword>')<CR>
+map <F8> <ESC>:Makers<CR>
+nnoremap <F11> :make <CR>
+nnoremap <F12> :grep <cword><CR>
+
+
+" Align json text.
+command! -range Json <line1>,<line2>:!python3 -c 'import sys,json;print(json.dumps(json.loads(sys.stdin.read()),indent=4,ensure_ascii=False))' 
+
 " Diff between saved data and current buffer.
 command! DiffOrig vert new | set bt=nofile | r ++edit # | 0d_ | diffthis | wincmd p | diffthis
 
@@ -263,7 +273,9 @@ endfunction
 
 if has('nvim')
     call s:source_rc('option_nvim.rc.vim')
+    call s:source_rc('option_nvim.private.vim')
 else
     call s:source_rc('option_vim.rc.vim')
+    call s:source_rc('option_vim.private.vim')
 endif
 
