@@ -1,6 +1,7 @@
 export SHELL=$(which zsh)
 source $HOME/.zshrc_bashrc
 alias ss='source $HOME/.zshrc'
+source_if $HOME/.zshrc_bashrc.private
 source_if ~/.fzf.zsh
 
 # F6: git status
@@ -170,7 +171,6 @@ if [ -n "$(command -v starship)" ];then
     starship_zle-keymap-select-wrapped () { }
 fi
 
-##########################################
 source_if $HOME/.zshrc.private
 
 #############################################

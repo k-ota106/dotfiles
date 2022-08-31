@@ -86,6 +86,8 @@ for f in $(git ls-files);do
         continue
     elif [ $f == ".suggestion" -a -f $HOME/.suggestion ];then
         continue
+    elif [ $f =~ \.md$ ];then
+        continue
     fi
     do_symlink $f
 done
