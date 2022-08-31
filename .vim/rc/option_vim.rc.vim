@@ -19,11 +19,9 @@ nnoremap <A-k> <C-w>k
 nnoremap <A-l> <C-w>l
 
 " Detect Alt-key mapping
-let c='a'
-while c <= 'z'
+for c in ['h', 'j', 'k', 'l']
     exec "set <A-".c.">=\e".c
     exec "imap \e".c." <A-".c.">"
-    let c = nr2char(1+char2nr(c))
-endw
+endfor
 set timeout ttimeoutlen=50
 
