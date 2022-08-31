@@ -170,3 +170,13 @@ if [ -n "$(command -v starship)" ];then
     starship_zle-keymap-select-wrapped () { }
 fi
 
+##########################################
+source_if $HOME/.zshrc.private
+
+#############################################
+# Trouble shooting
+#############################################
+# * Fix tab completion.
+#   rm ~/.zcompdump
+#   exec $SHELL -l
+#

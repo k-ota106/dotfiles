@@ -1,6 +1,6 @@
 # dotfiles
 
-* bash 
+* bash
 * bvi
 * cargo and awesome rust tools (ripgrep, bat, etc...)
 * deno

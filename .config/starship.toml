@@ -38,6 +38,7 @@ $ruby\
 $rust\
 $scala\
 $swift\
+$lua\
 $terraform\
 $vagrant\
 $zig\
@@ -53,12 +54,14 @@ $custom\
 $cmd_duration\
 $time\
 $line_break\
-$lua\
 $jobs\
 $battery\
 $status\
 $shell\
 $character"""
+
+[hostname]
+ssh_symbol = ""
 
 [custom.vim]
 command = "echo Vim"
@@ -92,6 +95,10 @@ modified = "📝"
 staged = '[++\($count\)](green)'
 renamed = "👅"
 deleted = "🗑"
+
+#[character]
+#success_symbol = "[→](bold green)"
+#error_symbol = "[←](bold red)"
 
 [time]
 disabled = false

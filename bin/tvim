@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# vimのterminalから元vimのバッファで開く
+# Open a new buffer in a parent vim from a child vim terminal.
 
 if [ -p /dev/stdin -o -f /dev/stdin ]; then
     if [ -d ~/tmp ];then
@@ -16,15 +16,15 @@ else
 fi
 
 #if [ -t 0 ]; then
-#    # 標準入力が端末の場合
+#    # Stdin is a tty
 #    ....
 #elif [ -p /dev/stdin ]; then
-#    # 標準入力がパイプの場合
+#    # Stdin is a pipe
 #    ....
 #elif [ -f /dev/stdin ]; then
-#    # 標準入力が通常のファイルの場合 (シンボリックリンクでもリンク先が通常のファイルならOK)
+#    # Stdin is a file
 #    ....
 #else
-#    # 標準入力がそれ以外
+#    # Otherwise
 #    ....
 #fi

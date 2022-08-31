@@ -3,6 +3,7 @@ if [[ $- == *i* ]];then
     stty erase ^H
 fi
 shopt -s direxpand
+shopt -s expand_aliases
 set -o vi
 
 bind '"\C-n": history-search-forward'
@@ -23,6 +24,8 @@ alias ss='source $HOME/.bashrc'
 source_if $HOME/.fzf.bash
 source_if $HOME/.git-completion.bash
 source_if $HOME/.makers-completion.bash
+source_if $HOME/.zshrc_bashrc.private
+source_if $HOME/.bashrc.private
 
 ##########################################
 
@@ -37,4 +40,3 @@ fi
 if [ -n "$(command -v starship)" ];then
     eval "$(starship init bash)"
 fi
-
