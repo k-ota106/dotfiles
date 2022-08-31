@@ -32,7 +32,7 @@ function do_backup()
     local is_same=0
     local kind="file"
 
-    if [ -e $HOME/$f ];then
+    if [ -f $HOME/$f ];then
         is_copy=1
         if cmp -s $HOME/$f $f ;then
             is_same=1
