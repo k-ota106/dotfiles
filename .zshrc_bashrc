@@ -22,7 +22,7 @@ export PYTHONSTARTUP=$HOME/.pythonstartup
 export RUBYOPT=-w
 export XDG_CONFIG_DIR=$HOME/.config
 
-export PATH=$HOME/.local/bin:$PATH
+export PATH=$HOME/.local/bin:$HOME/bin:$PATH
 
 export DENO_INSTALL="$HOME/.deno"
 export PATH="$DENO_INSTALL/bin:$PATH"
