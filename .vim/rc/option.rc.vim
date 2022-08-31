@@ -264,18 +264,19 @@ command! DiffOrig vert new | set bt=nofile | r ++edit # | 0d_ | diffthis | wincm
 " Copy quickfix to loclist
 command! CopyQflistToLoclist :call setloclist(0, [], ' ', {'items': get(getqflist({'items': 1}), 'items')})
 
-function! s:source_rc(rc_file_name)
-    let rc_file = fnamemodify(expand('<sfile>'), ':p:h') . '/' . a:rc_file_name
-    if filereadable(rc_file)
-        :execute 'source' rc_file
+function! s:source_rc(rc_file)
+    if filereadable(a:rc_file)
+        :execute 'source ' . a:rc_file
     endif
 endfunction
 
+let s:dir = fnamemodify(expand('<sfile>'), ':p:h') . "/"
+
 if has('nvim')
-    call s:source_rc('option_nvim.rc.vim')
-    call s:source_rc('option_nvim.private.vim')
+    call s:source_rc(s:dir.'option_nvim.rc.vim')
+    call s:source_rc(s:dir.'option_nvim.private.vim')
 else
-    call s:source_rc('option_vim.rc.vim')
-    call s:source_rc('option_vim.private.vim')
+    call s:source_rc(s:dir.'option_vim.rc.vim')
+    call s:source_rc(s:dir.'option_vim.private.vim')
 endif
 
