@@ -27,12 +27,6 @@ source_if $HOME/.makers-completion.bash
 source_if $HOME/.zshrc_bashrc.private
 source_if $HOME/.bashrc.private
 
-##########################################
-
-if [ -f $HOME/.dircolors ];then
-    eval $(dircolors -b $HOME/.dircolors)
-fi
-
 ########################################## starship
 if [ -n "$(command -v set_tmux_pane_pwd.sh)" ];then
     starship_precmd_user_func="set_tmux_pane_pwd.sh"

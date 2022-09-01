@@ -31,6 +31,10 @@ export PATH="$DENO_INSTALL/bin:$PATH"
 
 source_if ~/.cargo/env
 
+if [ -f $HOME/.dircolors ];then
+    eval $(dircolors -b $HOME/.dircolors)
+fi
+
 ####################################################################################### alias
 
 alias h='history | uniq -f 2'
@@ -40,10 +44,10 @@ alias jp='export LANG=ja_JP.UTF-8'
 alias cp='cp -i'
 alias mv='mv -i'
 alias rm='rm -i'
-alias ls='ls -FC'
-alias la='ls -a'
-alias ll='ls -la'
-alias lt='ls -lart'
+alias ls='ls --color -FC'
+alias la='ls --color -a'
+alias ll='ls --color -la'
+alias lt='ls --color -lart'
 alias l=lt
 alias pwd='echo $PWD'
 alias psme='ps aux | grep "^$USER "'
