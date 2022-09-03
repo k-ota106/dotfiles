@@ -140,6 +140,10 @@ vnoremap <expr> s* ':s/\<' . expand('<cword>') . '\>/'
 map!  
 imap <CSI> <Nop>
 
+" Repace by yanked word.
+nnoremap <C-p> viw"0p 
+vnoremap <C-p> "0p 
+
 ""============================================================================== netrw
 let g:netrw_liststyle = 1
 let g:netrw_list_hide = '.*\.swp'
