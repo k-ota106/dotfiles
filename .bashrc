@@ -9,6 +9,10 @@ set -o vi
 bind '"\C-n": history-search-forward'
 bind '"\C-p": history-search-backward'
 
+# Select completion by TAB.
+bind 'set show-all-if-ambiguous on'
+bind 'TAB:menu-complete'
+
 # F6: git status
 # F7: make
 # F8: makers
