@@ -145,6 +145,7 @@ EXEC 01;32
 .rz 01;31
 .cab 01;31
 # image formats
+.dpx 01;33
 .jpg 01;33
 .jpeg 01;33
 .gif 01;33
