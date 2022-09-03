@@ -173,11 +173,6 @@ command! -nargs=? -complete=file DduFileRec call s:DduFileRec(<f-args>)
   xnoremap <expr> ;r (mode() ==# 'V' ? '"_R<Esc>' : '"_d') .
   \ '<Cmd>Ddu -buffer-name=register register
   \  -source-option-defaultAction=insert -ui-param-autoResize<CR>'
-
-  " Plugins installed by the dein.
-  nnoremap sg <Cmd>Ddu
-  \ dein<CR>
-
 '''
 hook_source = '''
 call ddu#custom#alias('source', 'file_rg', 'file_external')

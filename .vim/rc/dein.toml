@@ -30,8 +30,13 @@ hook_add = '''
 "let g:yankring_del_v_key = ''
 "vnoremap x "0x
 let g:yankring_warn_on_truncate = 0
+nnoremap ;y <Cmd>YRShow<CR>
 '''
 
+hook_post_source = '''
+nnoremap <C-p> viw"0p 
+vnoremap <C-p> "0p 
+'''
 
 ################################ Text alignment
 [[plugins]]

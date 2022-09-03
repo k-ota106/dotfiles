@@ -158,6 +158,8 @@ let g:netrw_sort_direction = "reverse"
 let g:netrw_maxfilenamelen = 85
 let g:netrw_wiw = 1
 let g:netrw_list_cmd = "ls -l"
+" Open 85% of window width when splitting.
+let g:netrw_winsize = 85
 
 " h: move to parent directory
 " l: move to child directory or open selected file
@@ -240,12 +242,6 @@ augroup vimStartup
             \   :hi clear DoubleByteSpace
     endif
 
-    " Workaround for YankRing.vim.
-    autocmd VimEnter *
-        \   :vnoremap <silent> x "0x
-        \ | :vnoremap <silent> d "0d
-        \ | :vnoremap <silent> p "0p
-        \ | :vnoremap <silent> <C-p> p
 augroup END
 
 "============================================================================== Utility

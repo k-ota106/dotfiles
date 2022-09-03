@@ -111,6 +111,8 @@ if len(s:removed_plugins) > 0
     call dein#recache_runtimepath()
 endif
 
+autocmd VimEnter * call dein#call_hook('post_source')
+
 filetype plugin indent on
 syntax enable
 
