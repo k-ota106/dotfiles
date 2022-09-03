@@ -6,8 +6,8 @@ zle -N history-beginning-search-backward-end history-search-end
 zle -N history-beginning-search-forward-end history-search-end
 bindkey "^P" history-beginning-search-backward-end
 bindkey "^N" history-beginning-search-forward-end
-bindkey -v
-bindkey -M vicmd "^R" redo
+bindkey -v                  # vi-mode
+bindkey -M vicmd "^R" redo  # redu by "Ctrl-R" when normal mode.
 bindkey -M vicmd "u" undo
 
 # F6: git status
@@ -30,49 +30,44 @@ bashcompinit
 zstyle ':completion:*' matcher-list 'm:{-a-z}={_A-Z}'
 zstyle ':completion:*:default' menu select=1
 
+setopt list_packed          # Make the completion list smaller.
+setopt listtypes            # Show type of each file when completion.
+setopt nolistbeep           # No beep for completion.
+setopt printeightbit        # Print eight bit characters.
+
 ##################################
-# change directly path
+# Change directory
 ##################################
-cdpath=(~ ..)
+cdpath=(~ ..)               # Search path for the cd command.
+setopt auto_cd              # Go to directory without 'cd' command.
+setopt auto_pushd           # Push directory onto the directory stack.
+setopt pushd_ignore_dups    # Remove duplicates from the directory stack.
 
 ##################################
 # Other setopt
 ##################################
-setopt auto_cd
-setopt auto_pushd
-setopt correct
-setopt list_packed
-setopt nolistbeep
-setopt nohup
-setopt ALIASES
+setopt correct              # Correct the speeling of commands.
+setopt nohup                # Not send the HUP signal to running jobs when the shell exits.
+setopt aliases              # Expand aliases.
 
-#setopt autolist
-setopt listtypes
-setopt automenu
-#setopt histverify
-setopt histignorealldups
-setopt histignorespace
-setopt histreduceblanks
-setopt ignoreeof
-#setopt autopushd pushd_ignore_dups
-setopt pushd_ignore_dups
-setopt extendedglob
-setopt autoresume
-setopt printeightbit
-setopt printexitvalue
+setopt histignorealldups    # Remove the older duplicate command from the history list.
+setopt histignoredups       # Do not enter command lines into the history list if they are duplicates of the previous event.
+setopt histignorespace      # Don't register commands starts with a space to the history list.
+setopt histreduceblanks     # Remove superfluous blanks from each command line being added to the history list.
+setopt share_history        # Share the command history with another shells.
+setopt ignoreeof            # Do not exit on end-of-file.
+setopt extendedglob         # Enable extended glob
+                            #   not:    ^PATTERN
+                            #   exclude PATTERN~EXCLUDE
+setopt printexitvalue       # Print exit status when a command failed.
+setopt nonomatch            # Same behavior as bash when there is no match with "*" (do not make an error) 
 
-# Same behavior as bash when there is no match with "*" (do not make an error) 
-setopt nonomatch
-
-# Handle whitespace in the same way as in bash (allow splitting by for statement)
-#setopt SH_WORD_SPLIT
+#setopt SH_WORD_SPLIT       # Handle whitespace in the same way as in bash (allow splitting by for statement)
 
 # History
 HISTFILE=~/.zsh_history
 HISTSIZE=10000
 SAVEHIST=10000
-setopt hist_ignore_dups
-setopt share_history
 
 ##################################
 # source setting files
@@ -86,9 +81,6 @@ source_if $HOME/.makers-completion.bash
 source_if $HOME/.zshrc_bashrc.private
 source_if $HOME/.zshrc.private
 
-##################################
-# starship
-##################################
 if [ -n "$(command -v set_tmux_pane_pwd.sh)" ];then
     set_tmux_pane_pwd () { set_tmux_pane_pwd.sh }
     precmd_functions+=(set_tmux_pane_pwd)
