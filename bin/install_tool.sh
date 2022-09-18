@@ -151,7 +151,7 @@ function install_ctags() {
         ./autogen.sh
         ./configure --prefix=$HOME/.local
         make
-        make -n install
+        make install
         popd
     fi
 }
