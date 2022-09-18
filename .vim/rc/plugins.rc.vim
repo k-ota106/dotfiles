@@ -61,11 +61,35 @@ nnoremap <silent> <leader>i :call eda_utils#ShowLoclistOnCurrLine()<CR>
 nnoremap <silent> <leader>v :call eda_utils#ViewTable()<CR>
 
 """"""""""""""""""""""""""""""""""""""""""""""""" gtags 6.6.8
-let g:Gtags_No_Auto_Jump = 1
-nnoremap <silent> <leader>gf :Gtags -f %<CR>
-nnoremap <expr> <leader>gd ':Gtags -a  ' . expand('<cword>') . '<CR>'
-nnoremap <expr> <leader>gr ':Gtags -ar ' . expand('<cword>') . '<CR>'
-nnoremap <expr> <leader>gg ':Gtags -ag ' . expand('<cword>')
+if executable('global')
+    let g:Gtags_No_Auto_Jump = 1
+    nnoremap <silent> <leader>gf :Gtags -f %<CR>
+    nnoremap <expr> <leader>gd ':Gtags -a  ' . expand('<cword>') . '<CR>'
+    nnoremap <expr> <leader>gr ':Gtags -ar ' . expand('<cword>') . '<CR>'
+    nnoremap <expr> <leader>gg ':Gtags -ag ' . expand('<cword>')
+    
+    augroup GlobalComplete
+      autocmd!
+      autocmd FileType * if &omnifunc == "" | setlocal omnifunc=GlobalComplete | endif
+    augroup END
+    
+    function! GlobalComplete(findstart, base)
+      if a:findstart == 1
+        return s:LocateCurrentWordStart()
+      else
+        return split(system('global -c ' . a:base), '\n')
+      endif
+    endfunction
+    
+    function! s:LocateCurrentWordStart()
+      let l:line = getline('.')
+      let l:start = col('.') - 1
+      while l:start > 0 && l:line[l:start - 1] =~# '\a'
+        let l:start -= 1
+      endwhile
+      return l:start
+    endfunction
+endif
 
 """"""""""""""""""""""""""""""""""""""""""""""""" dein
 
