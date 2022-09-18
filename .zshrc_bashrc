@@ -27,6 +27,11 @@ export PATH=$HOME/.local/bin:$HOME/bin:$PATH
 export DENO_INSTALL="$HOME/.deno"
 export PATH="$DENO_INSTALL/bin:$PATH"
 
+if [ -f $HOME/.local/share/gtags/gtags.conf ];then
+    export GTAGSCONF=$HOME/.local/share/gtags/gtags.conf
+    export GTAGSLABEL=pygments
+fi
+
 #export MANPAGER='nvim --clean +Man\!'
 
 source_if ~/.cargo/env
