@@ -1,7 +1,11 @@
-if has('nvim')
-    let s:rc_root_dir = stdpath('config')
+if exists('g:_rc_root_dir_')
+    let s:rc_root_dir = g:_rc_root_dir_
 else
-    let s:rc_root_dir = $HOME.'/.vim'
+    if has('nvim')
+        let s:rc_root_dir = stdpath('config')
+    else
+        let s:rc_root_dir = $HOME.'/.vim'
+    endif
 endif
 let s:rc_dir = s:rc_root_dir.'/rc'
 

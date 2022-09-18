@@ -68,6 +68,7 @@ alias gsm='git submodule'
 alias gg='git rev-parse --show-toplevel | xargs git grep'
 alias grs='git rev-parse --show-toplevel'
 alias gmk='makers --cwd $(git rev-parse --show-toplevel)'
+alias remove_ansi_esc='sed -r "s/\x1B\[([0-9]{1,2}(;[0-9]{1,2})?)?[m|K]//g"'
 
 #alias hex2dec="ruby -e 'ARGV.each{|i| p i.hex}'"
 #alias hex2str="ruby -e 'puts ARGV.join.scan(/../).map{|i| i.hex}.pack(\"C*\")'"

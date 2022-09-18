@@ -36,12 +36,18 @@ function install_package() {
 }
 
 function is_not_installed() {
+    cmd=$(basename $1)
+    if [ "$cmd" == "$1" ];then
+        check_cmd=""
+    else
+        check_cmd=$1
+    fi
     mkdir -p $HOME/.local/bin
-    test -z "$(command -v $* $HOME/.local/bin/$1 $HOME/.cargo/bin/$1)"
+    test -z "$(command -v $check_cmd $HOME/.local/bin/$cmd $HOME/.cargo/bin/$cmd)"
 }
 
 function install_fzf() {
-    if is_not_installed fzf $HOME/.fzf/bin/fzf; then
+    if is_not_installed $HOME/.fzf/bin/fzf; then
         git clone --depth 1 https://github.com/junegunn/fzf.git $HOME/.fzf
         $HOME/.fzf/install --no-update-rc --no-bash --no-zsh
     fi
@@ -136,6 +142,47 @@ function install_deno() {
     fi
 }
 
+function install_ctags() {
+    if is_not_installed ctags;then
+        if [ ! -d ctags ];then
+            git clone https://github.com/universal-ctags/ctags
+        fi
+        pushd ctags
+        ./autogen.sh
+        ./configure --prefix=$HOME/.local
+        make
+        make -n install
+        popd
+    fi
+}
+
+function install_pygements() {
+    pip3 install --user Pygments
+}
+
+# Require: pygements, ctags
+function install_globals() {
+    if is_not_installed global -o is_not_installed gtags;then
+        local d=global-6.6.8
+        if [ ! -d $d ];then
+            wget https://ftp.gnu.org/pub/gnu/global/${d}.tar.gz
+            tar xzf $d.tar.gz
+        fi
+        pushd $d
+        ./configure --prefix=$HOME/.local
+        make
+        make install
+        if [ ! -f $HOME/.local/share/gtags/script/pygments_parser.py.BAK ];then
+            sed -i.BAK -e '1s@/usr/bin/python@/usr/bin/env python3@' $HOME/.local/share/gtags/script/pygments_parser.py
+        fi
+        if [ ! -f $HOME/.vim/plugin/gtags.vim ];then
+            mkdir -p $HOME/.vim/plugin
+            cp $HOME/.local/share/gtags/gtags.vim $HOME/.vim/plugin
+        fi
+        popd
+    fi
+}
+
 function install_yad() {
     if is_not_installed yad;then
         $INSTALL yad
@@ -184,6 +231,9 @@ install_starship
 install_cargo
 install_cargo_tools
 install_deno
+install_ctags
+install_pygements
+install_globals
 
 if [ $all -eq 1 ];then
     install_yad

@@ -119,7 +119,7 @@ map <C-Space> <PageUp>
 
 " Motion: QuickFix and Location List
 " - prev/next: move to a next/prev item in the list.
-" - before/afterm: move to a next/prev item from the current line.
+" - before/after: move to a next/prev item from the current line.
 noremap [Q  :cprev<CR>
 noremap ]Q  :cnext<CR>
 noremap [q  :cbefore<CR>
@@ -249,7 +249,7 @@ augroup vimStartup
 augroup END
 
 "============================================================================== Utility
-map <F7> <ESC>:execute "GGrep ".expand('<cword>')<CR>
+map <F7> <ESC>:execute "Ggrep ".expand('<cword>')<CR>
 map <F8> <ESC>:Makers<CR>
 nnoremap <F11> :make <CR>
 nnoremap <F12> :grep <cword><CR>
@@ -257,6 +257,9 @@ nnoremap <F12> :grep <cword><CR>
 
 " Align json text.
 command! -range Json <line1>,<line2>:!python3 -c 'import sys,json;print(json.dumps(json.loads(sys.stdin.read()),indent=4,ensure_ascii=False))' 
+
+" Remove ANSI escape sequence.
+command! -range RemoveAnsiEscape <line1>,<line2>:!sed -r 's/\x1B\[([0-9]{1,2}(;[0-9]{1,2})?)?[m|K]//g'
 
 " Diff between saved data and current buffer.
 command! DiffOrig vert new | set bt=nofile | r ++edit # | 0d_ | diffthis | wincmd p | diffthis
@@ -279,4 +282,5 @@ else
     call s:source_rc(s:dir.'option_vim.rc.vim')
     call s:source_rc(s:dir.'option_vim.private.vim')
 endif
+
 

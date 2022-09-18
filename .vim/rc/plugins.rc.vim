@@ -7,15 +7,19 @@
 
 let mapleader = "\<Space>"
 
-if has('nvim')
-    let s:rc_root_dir = stdpath('config')
+if exists('g:_rc_root_dir_')
+    let s:rc_root_dir = g:_rc_root_dir_
 else
-    if version < 802
-        finish
+    if has('nvim')
+        let s:rc_root_dir = stdpath('config')
+    else
+        if version < 802
+            finish
+        endif
+        let s:rc_root_dir = $HOME.'/.vim'
+        " Open nvim from vim.
+        command! -complete=file -nargs=* Nvim    :!unset VIM MYVIMRC VIMRUNTIME && nvim <args>
     endif
-    let s:rc_root_dir = $HOME.'/.vim'
-    " Open nvim from vim.
-    command! -complete=file -nargs=* Nvim    :!unset VIM MYVIMRC VIMRUNTIME && nvim <args>
 endif
 
 """"""""""""""""""""""""""""""""""""""""""""""""" cargo-make
@@ -56,6 +60,12 @@ nnoremap <silent> <leader>i :call eda_utils#ShowLoclistOnCurrLine()<CR>
 " view table
 nnoremap <silent> <leader>v :call eda_utils#ViewTable()<CR>
 
+""""""""""""""""""""""""""""""""""""""""""""""""" gtags 6.6.8
+let g:Gtags_No_Auto_Jump = 1
+nnoremap <silent> <leader>gf :Gtags -f %<CR>
+nnoremap <expr> <leader>gd ':Gtags -a  ' . expand('<cword>') . '<CR>'
+nnoremap <expr> <leader>gr ':Gtags -ar ' . expand('<cword>') . '<CR>'
+nnoremap <expr> <leader>gg ':Gtags -ag ' . expand('<cword>')
 
 """"""""""""""""""""""""""""""""""""""""""""""""" dein
 

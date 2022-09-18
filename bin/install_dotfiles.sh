@@ -84,6 +84,8 @@ fi
 for f in $(git ls-files);do
     if [[ $f =~ ^bin/install.*\.sh ]];then
         continue
+    elif [[ $f =~ ^misc/ ]];then
+        continue
     elif [ $f == ".suggestion" -a -f $HOME/.suggestion ];then
         continue
     elif [[ $f =~ \.md$ ]];then

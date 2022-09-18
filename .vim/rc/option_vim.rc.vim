@@ -1,3 +1,4 @@
+if version >= 802
 " <C-R><regsiter>: Insert register in the terminal mode
 tnoremap <expr> <C-R> '<C-W>"'
 
@@ -24,4 +25,4 @@ for c in ['h', 'j', 'k', 'l']
     exec "imap \e".c." <A-".c.">"
 endfor
 set timeout ttimeoutlen=50
-
+endif

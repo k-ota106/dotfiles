@@ -1,4 +1,4 @@
-set mouse=a
+"set mouse=
 let g:previm_enable_realtime = 1
 "let g:eda_utils_disable_keymap = 1
 """""""""""""""""""""""""""""""""""""""""""""""""""
