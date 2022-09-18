@@ -246,6 +246,8 @@ augroup vimStartup
             \   :hi clear DoubleByteSpace
     endif
 
+    au FileType qf nnoremap <buffer> p  <CR>zz<C-w>p
+
 augroup END
 
 "============================================================================== Utility
