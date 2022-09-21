@@ -245,7 +245,9 @@ install_pygements
 install_globals
 
 if [ $all -eq 1 ];then
+    set +e
     install_yad
+    set -e
 fi
 
 #update_git
