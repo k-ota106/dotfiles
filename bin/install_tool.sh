@@ -16,7 +16,6 @@
 # sudo -E apt-get upgrade -y
 # sudo -E apt-get install -y git unzip wget curl pkg-config libssl-dev libncurses-dev python3 python3-pip
 
-
 set -e
 
 cargo=cargo
@@ -27,12 +26,21 @@ else
 fi
 if [ -f /etc/redhat-release ];then
     INSTALL="$sudo yum install -y"
+    OS=centos
 else
     INSTALL="$sudo apt-get install -y"
+    OS=ubuntu
 fi
 
 function install_package() {
-    $INSTALL git unzip wget curl pkg-config libssl-dev libncurses-dev python3 python3-pip
+    $INSTALL git unzip wget curl pkg-config libssl-dev libncurses-dev python3 python3-pip automake autoconf
+    if [ $OS == ubuntu ];then
+        #$INSTALL build-essentials
+        true
+    else
+        $sudo yum groupinstall -y "Development Tools"
+        $INSTALL kernel-devel kernel-headers
+    fi
 }
 
 function is_not_installed() {
