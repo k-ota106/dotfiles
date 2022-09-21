@@ -9,5 +9,5 @@ this_dir=$(readlink -f $this_dir)
 cd $this_dir
 
 ./bin/install_dotfiles.sh
-./bin/install_tool.sh
+./bin/install_tool.sh $*
 
