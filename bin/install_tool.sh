@@ -40,6 +40,7 @@ function install_package() {
     else
         $sudo yum groupinstall -y "Development Tools"
         $INSTALL kernel-devel kernel-headers
+        $INSTALL yum install ca-certificates
     fi
 }
 
