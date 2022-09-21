@@ -178,7 +178,7 @@ function install_globals() {
             tar xzf $d.tar.gz
         fi
         pushd $d
-        ./configure --prefix=$HOME/.local
+        ./configure --prefix=$HOME/.local --disable-gtagscscope
         make
         make install
         if [ ! -f $HOME/.local/share/gtags/script/pygments_parser.py.BAK ];then
