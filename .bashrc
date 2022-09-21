@@ -22,7 +22,7 @@ bind  '"\e[18~":"make\n"'
 bind  '"\e[19~":"makers\n"'
 bind  '"\e[20~":"fcdworktree\n"'
 
-export SHELL=$(which bash)
+export SHELL=$(command -v bash)
 source $HOME/.zshrc_bashrc
 alias ss='source $HOME/.bashrc'
 source_if $HOME/.fzf.bash

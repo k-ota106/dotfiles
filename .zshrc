@@ -72,7 +72,7 @@ SAVEHIST=10000
 ##################################
 # source setting files
 ##################################
-export SHELL=$(which zsh)
+export SHELL=$(command -v zsh)
 source $HOME/.zshrc_bashrc
 alias ss='source $HOME/.zshrc'
 source_if $HOME/.fzf.zsh

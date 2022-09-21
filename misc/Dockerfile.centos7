@@ -2,7 +2,10 @@ FROM centos:centos7
 
 ENV DEBIAN_FRONTEND=noninteractive
 RUN yum install -y git
+RUN yum install -y centos-release-scl
+RUN yum install -y devtoolset-9-gcc devtoolset-9-gcc-c++
 RUN cd $HOME && git clone https://github.com/k-ota106/dotfiles
 RUN cd $HOME/dotfiles && bash ./bin/install.sh all
-RUN nvim -cq
-
+SHELL ["/bin/bash", "-l", "-c"]
+RUN { scl enable devtoolset-9 bash; cargo install deno --locked; }
+RUN rm ~/.deno/bin/deno && nvim -cq
