@@ -198,6 +198,21 @@ function install_yad() {
     fi
 }
 
+function install_tmux() {
+    if is_not_installed tmux;then
+        v=3.0
+        d=tmux-$v
+        rm -rf $d $d.tar.gz
+        curl -kLO https://github.com/tmux/tmux/releases/download/$v/$d.tar.gz
+        tar xzf $d.tar.gz
+        pushd $d
+        ./configure --prefix=$HOME/.local
+        make
+        make install
+        popd
+    fi
+}
+
 function update_git() {
     if [ ! -d git ];then
         git clone https://github.com/git/git.git
@@ -247,6 +262,7 @@ install_globals
 if [ $all -eq 1 ];then
     set +e
     install_yad
+    install_tmux
     set -e
 fi
 
