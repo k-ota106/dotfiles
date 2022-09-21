@@ -33,7 +33,7 @@ else
 fi
 
 function install_package() {
-    $INSTALL git unzip wget curl pkg-config libssl-dev libncurses-dev python3 python3-pip automake autoconf
+    $INSTALL git unzip wget curl pkg-config libssl-dev libncurses-dev python3 python3-pip automake autoconf zsh
     if [ $OS == ubuntu ];then
         #$INSTALL build-essentials
         true
