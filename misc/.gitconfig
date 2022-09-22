@@ -1,0 +1,151 @@
+#[user]
+#	name =
+#	email =
+
+[gui]
+	fontui = -family gothic -size 12 -weight bold -slant roman -underline 0 -overstrike 0
+	fontdiff = -family gothic -size 10 -weight normal -slant roman -underline 0 -overstrike 0
+
+[diff]
+    tool = vimdiff
+    noprefix = yes
+    submodule = log
+
+[init]
+	defaultBranch = main
+
+[pull]
+	ff = only
+
+[merge]
+    ff = false
+	tool = vimdiff
+    conflictstyle = diff3
+
+[alias]
+	edit = branch --edit-description
+	description = ! git config branch.$(git branch --show-current).description
+	sub = submodule
+	st = status
+	co = checkout
+	ci = commit
+	br = branch
+	ls = ls-files
+	makers = ! makers --cwd $(git rev-parse --show-toplevel)
+	graph  = log --graph --date-order -C -M --pretty=format:\"<%h> %ad [%an] %d %s\" --all --date=short
+	graph2 = log --graph --date-order -C -M --pretty=format:\"<%h> %ad [%an] %d %s\" --date=short
+	update = fetch origin 'refs/heads/*:refs/heads/*' 
+    log1 = log --oneline
+    log2 = log --pretty=format:\"<%h> %ad [%an] %s %d\" --date=iso # --all 
+    #brv = branch --format=\"%(objectname:short) %(authordate:short) %(subject) [%(HEAD)%(refname:short)]\"
+    brv = branch --format=\"%(objectname:short) %(authordate) %(subject) [%(HEAD)%(refname:short)]\"
+
+    # 変更ファイルリストとその数の集計をレポートする
+    summary = ! echo "$PWD $(git branch --show-current)" && git status -s . | sort && echo "===" && git status -s . | awk '{print $1}' | sort | uniq -c
+
+    # worktree のブランチdescription とディレクトリを表示する。
+    workinfo = "!f() { git worktree list | while read dir commit name; do br=$(echo \"$name\" | sed -e 's/^[[]//; s/]$//'); echo $dir $(git branch --list $br --format=\"%(objectname:short) %(authordate) [%(HEAD)%(refname:short)] %(subject)\"); git config branch.$br.description | sed -e 's/^/  /'; echo ''; done }; f"
+
+    # worktree のstatus(ファイルの変更の有無のみ)を表示する。
+    #   workstat       : 変更数
+    #   workstat-long  : 変更ファイルリスト (untrackingあり)
+    #   workstat-short : 変更ファイルリスト (untrackingなし)
+    workstat = "!f() { git worktree list | while read dir commit name; do echo \"$name $dir\"; cd $dir; git --git-dir=.git status . -s | awk '{print $1}' | sort | uniq -c; done }; f"
+    workstat-long = "!f() { git worktree list | while read dir commit name; do echo \"$name $dir\"; cd $dir; pwd; git --git-dir=.git status . -s | sort ; done }; f"
+    workstat-short = "!f() { git worktree list | while read dir commit name; do echo \"$name $dir\"; cd $dir; git --git-dir=.git status . -s | grep -v '^ *?' | sort; done }; f"
+
+[core]
+    editor = nvim
+	excludesfile = ~/.gitignore
+	quotepath = false
+    pager = less -cmR
+	filemode = false
+
+[push]
+	default = simple
+
+[pager]
+    branch = false
+    status = false
+    tag = false
+    #diff = diff-so-fancy | less --tabs=4 -RFX
+    diff = delta
+    
+[delta]
+    line-numbers = true
+    zero-style = dim syntax
+    diff-highlight = true
+    keep-plus-minus-markers = true
+    #side-by-side = true
+
+#[color]
+#    ui = off
+
+[color "status"]
+    added = yellow
+    changed = green
+    untraced = cyan
+
+## chips #######################################################
+# git ls
+#   --full-name     get path from git root
+#   --stage | grep 160000 # list submodule
+#
+# git log
+#   --merges        merge commit only
+#   --no-merges     ignore merge commit
+#   --first-parent  ignore commits in merged branch
+#
+#   <A>..<B>        A to B
+#   <A>...<B>       "merge-base of A and B" to "B" (git diff $(git merge-base A B) B
+#
+# git branch
+#   -av : show local and remote branch and commit id
+#   -rv : show remote branch and commit id
+#   -vv : show local and upstream branch
+#
+#   git branch --edit-description
+#   git config branch.<branch>.description
+#
+# git show-branch --color '*feature-implement-dec_ilf*' | less -crm
+#
+# git tag
+#   -n1 : show annotate (N lines)
+#
+# git status
+#   -uno : ignore un-tracking files
+#   --ignore-submodules=dirty : ignore untracked content in submodules
+#
+# git diff
+#   -wb --ignore-blank-lines  : 空白や改行を無視する
+#   --stat, --numstat         : 指定区間のファイルの変更状況を表示する(ログが出ないので変更ファイル一覧として見れる)
+#   -- -- ':!PATTERN'         : ワイルドカードパターンに完全にマッチするファイルを除外する
+#   --submodule=diff --cached : Indexにあるサブモジュールの更新 
+#
+#   git diff HEAD 'HEAD@{1 day ago}'
+#   git diff HEAD 'HEAD@{2015-06-01}' 
+#   git diff HEAD 'HEAD@{2015-06-01 0:00}'
+#   git diff HEAD 'HEAD@{9:00}'
+#
+#   通常diff, 色なし:       git diff | less
+#   通常diff, 色あり:       git diff | bat
+#   おしゃれdiff,行あり:    git -c delta.side-by-side=true diff
+#   おしゃれdiff,行なし:    git diff | diff-so-fancy | bat -p
+#   bat diff:               git diff --diff-filter=d --name-only | xargs bat --diff
+#
+# git submodule
+#   git submodule foreach "git checkout \$(git remote show origin | grep 'HEAD branch' | awk '{print \$NF}')" : 全部デフォルトブランチにする
+#   git submodule foreach "git graph | head || true"    : 全部ブランチのグラフを見る
+#
+# git name-rev COMMIT  # commit -> name
+#
+# git br --contains=HEAD -vv
+#
+# git log --cherry HEAD...cref/develop
+#
+# git cherry TARGET      : TARGETブランチにマージされていないカレントブランチのコミットの一覧
+# git cherry HEAD TARGET : カレントブランチにマージされていないTARGETブランチのコミットの一覧
+#
+# git log HEAD -1 --format="%cd" --date="format:%Y%m%d"
+# 
+# git grep -E -w KEY $(git rev-parse --show-toplevel)
