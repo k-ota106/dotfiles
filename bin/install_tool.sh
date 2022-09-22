@@ -100,6 +100,20 @@ EOF
     fi
 }
 
+# $1: command name
+# $2: package name
+function cargo_install() {
+    local cmd=$1
+    if [ $# -eq 1 ];then
+        local pkg=$1
+    else
+        local pkg=$2
+    fi
+    if is_not_installed $cmd;then
+        $cargo install $pkg
+    fi
+}
+
 function install_cargo_tools() {
 
     if [ -f $HOME/.cargo/bin/cargo ];then
@@ -112,33 +126,18 @@ function install_cargo_tools() {
         return
     fi
 
-    if is_not_installed rg;then
-        $cargo install ripgrep
-    fi
-    
-    if is_not_installed bat;then
-        $cargo install bat
-    fi
-    
-    if is_not_installed fd;then
-        $cargo install fd-find
-    fi
-    
-    if is_not_installed delta;then
-        $cargo install git-delta
-    fi
+    cargo_install rg          ripgrep
+    cargo_install bat
+    cargo_install fd          fd-find    
+    cargo_install delta       git-delta  
+    cargo_install makers      cargo-make 
+    cargo_install rust-script
+    cargo_install fx          felix      
 
-    if is_not_installed makers;then
-        $cargo install cargo-make
-    fi
-
-    if is_not_installed rust-script;then
-        $cargo install rust-script
-    fi
-
-    if is_not_installed fx;then
-        $cargo install felix
-    fi
+    set +e
+    cargo_install hyperfine
+    cargo_install btm           bottom
+    set -e
 }    
 
 function install_deno() {
