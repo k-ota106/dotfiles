@@ -18,6 +18,8 @@
 
 set -e
 
+export PKG_CONFIG_PATH=$HOME/.local/lib/pkgconfig
+
 cargo=cargo
 if [ -z $(command -v sudo) ];then
     sudo=""
@@ -198,8 +200,34 @@ function install_yad() {
     fi
 }
 
+function install_libevent() {
+    v=2.1.12
+    wget https://github.com/libevent/libevent/releases/download/release-$v-stable/libevent-$v-stable.tar.gz
+    tar xzf libevent-$v-stable.tar.gz
+    pushd libevent-$v-stable/
+    ./configure --prefix=$HOME/.local --disable-openssl
+    make
+    make install
+    popd
+}
+
+function install_ncurses() {
+    v=6.3
+    wget https://invisible-mirror.net/archives/ncurses/ncurses-$v.tar.gz
+    pushd ncurses-$v
+    ./configure --prefix=$HOME/.local --enable-pc-files --with-pkg-config-libdir=$HOME/.local/lib/pkgconfig
+    make
+    make install
+    popd
+}
+
+
+
 function install_tmux() {
     if is_not_installed tmux;then
+        install_libevent
+        install_ncurses
+
         v=3.0
         d=tmux-$v
         rm -rf $d $d.tar.gz
