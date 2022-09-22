@@ -237,6 +237,27 @@ function install_tmux() {
         make
         make install
         popd
+
+        mkdir -p ~/.config/tmux/plugins
+        d=~/.tmux.conf
+        s=~/.config/tmux/tmux.conf
+        if [ ! -e $s ];then
+            ln -s $d $s
+        fi
+
+        d=~/.tmux/plugins/tpm
+        s=~/.config/tmux/plugins/tpm
+        if [ ! -d $d ];then
+            git clone https://github.com/tmux-plugins/tpm $d
+            test -e $s || ln -s $d $s
+        fi
+
+        d=~/.tmux/plugins/tmux-resurrect
+        s=~/.config/tmux/plugins/tmux-resurrect
+        if [ ! -d $d ];then
+            git clone https://git::@github.com/tmux-plugins/tmux-resurrect $d
+            test -e $s || ln -s $d $s
+        fi
     fi
 }
 
