@@ -214,14 +214,13 @@ function install_libevent() {
 function install_ncurses() {
     v=6.3
     wget https://invisible-mirror.net/archives/ncurses/ncurses-$v.tar.gz
+    tar xzf ncurses-$v.tar.gz
     pushd ncurses-$v
     ./configure --prefix=$HOME/.local --enable-pc-files --with-pkg-config-libdir=$HOME/.local/lib/pkgconfig
     make
     make install
     popd
 }
-
-
 
 function install_tmux() {
     if is_not_installed tmux;then
