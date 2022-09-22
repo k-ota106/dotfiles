@@ -111,6 +111,7 @@ if dein#load_state(s:dein_dir)
         call mkdir(s:rc_dir, 'p')
     endif
     let s:toml = s:rc_dir . '/dein.toml'
+    let s:filetype_toml = s:rc_dir . '/dein_filetype.toml'
     let s:lazy_toml = s:rc_dir . '/dein_lazy.toml'
     let s:ddu_toml = s:rc_dir . '/ddu.toml'
     let s:priv_toml = s:rc_dir . '/dein.private.toml'
@@ -131,6 +132,7 @@ if dein#load_state(s:dein_dir)
         call dein#load_toml(s:priv_ddu_toml, {'lazy' : 1})
     endif
 
+    call dein#load_toml(s:filetype_toml)
     call dein#end()
     call dein#save_state()
 endif

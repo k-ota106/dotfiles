@@ -1,0 +1,13 @@
+[ftplugin]
+
+_ = '''
+'''
+
+c_cpp_verilog_systemverilog = '''
+    setlocal commentstring=//\ %s
+'''
+
+sh_tsv_tcl = '''
+    setlocal commentstring=#\ %s
+'''
+
