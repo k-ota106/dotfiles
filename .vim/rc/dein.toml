@@ -79,3 +79,10 @@ let g:fugitive_browse_handlers = ['IbexGitLab']
 #################################### commentary
 [[plugins]]
 repo = 'tpope/vim-commentary'
+
+#################################### EDA Utility
+[[plugins]]
+repo = 'k-ota106/vim-eda_utils'
+hook_add = '''
+let g:eda_utils_shell = 'zsh'
+'''
