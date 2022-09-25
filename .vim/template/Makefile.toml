@@ -1,0 +1,14 @@
+[config]
+skip_core_tasks = true
+
+[tasks.default]
+script = '''
+
+'''
+
+[tasks.help]
+description = "Show help."
+script = '''
+echo ${CARGO_MAKE_CURRENT_TASK_INITIAL_MAKEFILE}
+makers --makefile=${CARGO_MAKE_CURRENT_TASK_INITIAL_MAKEFILE} --list-all-steps
+'''
