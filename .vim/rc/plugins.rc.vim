@@ -17,78 +17,7 @@ else
             finish
         endif
         let s:rc_root_dir = $HOME.'/.vim'
-        " Open nvim from vim.
-        command! -complete=file -nargs=* Nvim    :!unset VIM MYVIMRC VIMRUNTIME && nvim <args>
     endif
-endif
-
-""""""""""""""""""""""""""""""""""""""""""""""""" cargo-make
-" For makers (cargo-make), search Makefile.toml up to 4 parent directory.
-function! s:Makers(...)
-    :let c = 1
-    :let prefix = ""
-    :if a:0 > 0
-    :  let args = join(a:000, " ")
-    :else
-    :  let args = "default"
-    :endif
-    :while c <= 4
-    :    echom prefix
-    :  if filereadable(prefix . "Makefile.toml")
-    :    if c == 1
-    :      let cwd = ""
-    :    else
-    :      let cwd = "--cwd " . prefix
-    :    endif
-    :    let cmd = "Job makers " . cwd . " " . args
-    :    echom cmd
-    :    exe cmd
-    :    break
-    :  endif
-    :  if isdirectory(prefix . ".git")
-    :    break
-    :  endif
-    :  let prefix = "../" . prefix
-    :  let c += 1
-    :endwhile
-endfunction
-command! -nargs=* -complete=file  Makers call s:Makers(<f-args>)
-
-""""""""""""""""""""""""""""""""""""""""""""""""" eda_utils
-" synchronize current line and loclist
-nnoremap <silent> <leader>i :call eda_utils#ShowLoclistOnCurrLine()<CR>
-" view table
-nnoremap <silent> <leader>v :call eda_utils#ViewTable()<CR>
-
-""""""""""""""""""""""""""""""""""""""""""""""""" gtags 6.6.8
-if executable('global')
-    let g:Gtags_No_Auto_Jump = 1
-    nnoremap <silent> <leader>gf :Gtags -f %<CR>
-    nnoremap <expr> <leader>gd ':Gtags -a  ' . expand('<cword>') . '<CR>'
-    nnoremap <expr> <leader>gr ':Gtags -ar ' . expand('<cword>') . '<CR>'
-    nnoremap <expr> <leader>gg ':Gtags -ag ' . expand('<cword>')
-    
-    augroup GlobalComplete
-      autocmd!
-      autocmd FileType * if &omnifunc == "" | setlocal omnifunc=GlobalComplete | endif
-    augroup END
-    
-    function! GlobalComplete(findstart, base)
-      if a:findstart == 1
-        return s:LocateCurrentWordStart()
-      else
-        return split(system('global -c ' . a:base), '\n')
-      endif
-    endfunction
-    
-    function! s:LocateCurrentWordStart()
-      let l:line = getline('.')
-      let l:start = col('.') - 1
-      while l:start > 0 && l:line[l:start - 1] =~# '\a'
-        let l:start -= 1
-      endwhile
-      return l:start
-    endfunction
 endif
 
 """"""""""""""""""""""""""""""""""""""""""""""""" dein

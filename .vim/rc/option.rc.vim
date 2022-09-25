@@ -85,25 +85,6 @@ if !exists('g:vscode')
     endif
 endif
 
-" Eanble syntax highlihgt.
-if has("syntax")
-	syntax on
-    set background=dark
-    silent! colorscheme  iceberg
-    "colorscheme  review
-    "colorscheme  summerfruit256
-    if !exists('g:vscode')
-        " Mark full-width space (　,\u3000), non-break space( , \u00a0)
-        autocmd WinEnter,BufEnter,VimEnter,ColorScheme *
-            \   :hi default DoubleByteSpace ctermbg=darkgray guibg=darkgray
-            \ | :hi default ExtraWhitespace ctermbg=darkmagenta guibg=darkmagenta
-            \ | :call matchadd('DoubleByteSpace', "　")
-            \ | :call matchadd('ExtraWhitespace', "[\u2000-\u200B\u00a0]")
-        autocmd WinEnter,BufEnter,VimEnter,ColorScheme *.txt,*.md,TODO,README
-            \   :hi clear DoubleByteSpace
-    endif
-endif
-
 "============================================================================== Mapping
 " Motion: display lines.
 nnoremap j gj
@@ -235,7 +216,7 @@ augroup vimStartup
     " Open frequently used files regardless of the current file type.
     au BufEnter * set suffixesadd=.v,.sv,.svh,.c,.cpp,.h,.e,.rb,.sfc,.tsv,.py
 
-    if has("syntax")
+    if has("syntax") && !exists('g:vscode')
         " Mark full-width space (　,\u3000), non-break space( , \u00a0)
         autocmd WinEnter,BufEnter,VimEnter,ColorScheme *
             \   :hi default DoubleByteSpace ctermbg=darkgray guibg=darkgray
@@ -248,14 +229,22 @@ augroup vimStartup
 
     au FileType qf nnoremap <buffer> p  <CR>zz<C-w>p
 
+    let s:template_dir = $HOME."/.vim/template"
+    if isdirectory(s:template_dir)
+        autocmd BufNewFile *.bash 0r $HOME/.vim/template/bash.t
+        autocmd BufNewFile *.c    0r $HOME/.vim/template/c.t
+        autocmd BufNewFile *.cc   0r $HOME/.vim/template/cpp.t
+        autocmd BufNewFile *.cpp  0r $HOME/.vim/template/cpp.t
+        autocmd BufNewFile *.py   0r $HOME/.vim/template/py.t
+        autocmd BufNewFile *.rb   0r $HOME/.vim/template/ruby.t
+        autocmd BufNewFile *.rs   0r $HOME/.vim/template/rs.t
+        autocmd BufNewFile *.sh   0r $HOME/.vim/template/sh.t
+        autocmd BufNewFile Makefile.toml   0r $HOME/.vim/template/Makefile.toml
+    endif
+
 augroup END
 
 "============================================================================== Utility
-map <F7> <ESC>:execute "Ggrep ".expand('<cword>')<CR>
-map <F8> <ESC>:Makers<CR>
-nnoremap <F11> :make <CR>
-nnoremap <F12> :grep <cword><CR>
-
 
 " Align json text.
 command! -range Json <line1>,<line2>:!python3 -c 'import sys,json;print(json.dumps(json.loads(sys.stdin.read()),indent=4,ensure_ascii=False))' 
