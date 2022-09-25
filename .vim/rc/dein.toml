@@ -85,4 +85,5 @@ repo = 'tpope/vim-commentary'
 repo = 'k-ota106/vim-eda_utils'
 hook_add = '''
 let g:eda_utils_shell = 'zsh'
+let g:eda_utils_mapleader = "\<Space>"
 '''
