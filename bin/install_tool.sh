@@ -14,7 +14,7 @@
 # = Maybe required =
 # sudo -E apt-get update  -y
 # sudo -E apt-get upgrade -y
-# sudo -E apt-get install -y git unzip wget curl pkg-config libssl-dev libncurses-dev python3 python3-pip
+# sudo -E apt-get install -y git unzip curl pkg-config libssl-dev libncurses-dev python3 python3-pip
 
 set -e
 
@@ -35,7 +35,7 @@ else
 fi
 
 function install_package() {
-    $INSTALL git unzip wget curl pkg-config libssl-dev libncurses-dev python3 python3-pip automake autoconf zsh
+    $INSTALL git unzip curl pkg-config libssl-dev libncurses-dev python3 python3-pip automake autoconf zsh
     if [ $OS == ubuntu ];then
         #$INSTALL build-essentials
         true
@@ -66,10 +66,16 @@ function install_fzf() {
 
 function install_nvim() {
     if is_not_installed nvim ;then
-        wget https://github.com/neovim/neovim/releases/download/v0.7.2/nvim.appimage
-        chmod +x nvim.appimage
-        ./nvim.appimage --appimage-extract
-        cp -r ./squashfs-root/usr/* $HOME/.local
+        if [ "$(uname)" == 'Darwin' ]; then
+            curl -LO https://github.com/neovim/neovim/releases/download/v0.7.2/nvim-macos.tar.gz
+            tar xzf nvim-macos.tar.gz
+            cp -r nvim-macos/* $HOME/.local
+        else
+            curl -LO https://github.com/neovim/neovim/releases/download/v0.7.2/nvim.appimage
+            chmod +x nvim.appimage
+            ./nvim.appimage --appimage-extract
+            cp -r ./squashfs-root/usr/* $HOME/.local
+        fi
     fi
 }
 
@@ -175,7 +181,7 @@ function install_globals() {
     if is_not_installed global -o is_not_installed gtags;then
         local d=global-6.6.8
         if [ ! -d $d ];then
-            wget https://ftp.gnu.org/pub/gnu/global/${d}.tar.gz
+            curl -LO https://ftp.gnu.org/pub/gnu/global/${d}.tar.gz
             tar xzf $d.tar.gz
         fi
         pushd $d
@@ -201,7 +207,7 @@ function install_yad() {
 
 function install_libevent() {
     v=2.1.12
-    wget https://github.com/libevent/libevent/releases/download/release-$v-stable/libevent-$v-stable.tar.gz
+    curl -LO https://github.com/libevent/libevent/releases/download/release-$v-stable/libevent-$v-stable.tar.gz
     tar xzf libevent-$v-stable.tar.gz
     pushd libevent-$v-stable/
     ./configure --prefix=$HOME/.local --disable-openssl
@@ -212,7 +218,7 @@ function install_libevent() {
 
 function install_ncurses() {
     v=6.3
-    curl -kLO https://invisible-mirror.net/archives/ncurses/ncurses-$v.tar.gz
+    curl -LO https://invisible-mirror.net/archives/ncurses/ncurses-$v.tar.gz
     tar xzf ncurses-$v.tar.gz
     pushd ncurses-$v
     ./configure --prefix=$HOME/.local --enable-pc-files --with-pkg-config-libdir=$HOME/.local/lib/pkgconfig
@@ -229,7 +235,7 @@ function install_tmux() {
         v=3.0
         d=tmux-$v
         rm -rf $d $d.tar.gz
-        curl -kLO https://github.com/tmux/tmux/releases/download/$v/$d.tar.gz
+        curl -LO https://github.com/tmux/tmux/releases/download/$v/$d.tar.gz
         tar xzf $d.tar.gz
         pushd $d
         ./configure --prefix=$HOME/.local

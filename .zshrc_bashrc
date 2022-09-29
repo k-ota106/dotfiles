@@ -36,7 +36,7 @@ fi
 
 source_if ~/.cargo/env
 
-if [ -f $HOME/.dircolors ];then
+if [ -f $HOME/.dircolors -a "$(command -v dircolors)" != "" ];then
     eval $(dircolors -b $HOME/.dircolors)
 fi
 

@@ -12,7 +12,7 @@ else
 fi
 
 this_dir=$(dirname ${BASH_SOURCE:-$0})/..
-this_dir=$(readlink -f $this_dir)
+this_dir=$(cd $(dirname $this_dir) && pwd)/$(basename $this_dir)
 backup_dir=$this_dir/backup
 cd $this_dir
 
