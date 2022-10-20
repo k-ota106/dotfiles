@@ -52,8 +52,21 @@ FZF-EOF"
 # fcd - cd to selected directory
 fcd() {
   local dir
-  dir=$(find ${1:-.} -path '*/\.*' -prune \
-                  -o -type d -print 2> /dev/null | fzf +m) &&
+  dir=$(find -L ${1:-.} -maxdepth ${2:-100} -path '*/.[^.]*' -prune \
+                  -o -type d -print 2> /dev/null | fzf +m \
+                    --preview='tree -NC -L 1 {} | head -n $FZF_PREVIEW_LINES' \
+                    --preview-window='right:hidden:wrap' \
+                    --bind=ctrl-v:toggle-preview \
+                    --bind=ctrl-x:toggle-sort \
+                    --bind=ctrl-o:jump-accept \
+                    --bind="alt-j:down" \
+                    --bind="alt-k:up" \
+                    --bind="alt-o:reload(find -L {}  -maxdepth 100 -path '*/.[^.]*' -prune -print -o -type d -print 2> /dev/null)+clear-query" \
+                    --bind="alt-l:reload(find -L {}  -maxdepth 1   -path '*/.[^.]*' -prune -print -o -type d -print 2> /dev/null)+clear-query" \
+                    --bind="alt-h:first+reload(if [[ {} =~ ^/ ]];then d=\$(realpath {}/..); else d=\$(realpath {}/.. --relative-to=.); fi; \
+                                         find -L \$d -maxdepth 1   -path '*/.[^.]*' -prune -print -o -type d -print 2> /dev/null)+clear-query" \
+                    --header='(view:ctrl-v) (wide:alt-o) (up:atl-h) (narrow:atl-l)' \
+                  ) &&
   pushd "$dir"
 }
 
