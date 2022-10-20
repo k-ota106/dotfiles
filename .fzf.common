@@ -65,7 +65,7 @@ fcd() {
                     --bind="alt-l:reload(find -L {}  -maxdepth 1   -path '*/.[^.]*' -prune -print -o -type d -print 2> /dev/null)+clear-query" \
                     --bind="alt-h:first+reload(if [[ {} =~ ^/ ]];then d=\$(realpath {}/..); else d=\$(realpath {}/.. --relative-to=.); fi; \
                                          find -L \$d -maxdepth 1   -path '*/.[^.]*' -prune -print -o -type d -print 2> /dev/null)+clear-query" \
-                    --header='(view:ctrl-v) (wide:alt-o) (up:atl-h) (narrow:atl-l)' \
+                    --header='(view:ctrl-v) (wide:alt-o) (updir:alt-h) (up:atl-k) (down:alt-j) (cd:atl-l)' \
                   ) &&
   pushd "$dir"
 }
