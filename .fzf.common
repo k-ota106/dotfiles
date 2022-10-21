@@ -52,7 +52,7 @@ FZF-EOF"
 # fcd - cd to selected directory
 fcd() {
   local dir
-  dir=$(find -L ${1:-.} -maxdepth ${2:-100} -path '*/.[^.]*' -prune \
+  dir=$(find -L ${1:-$PWD} -maxdepth ${2:-100} -path '*/.[^.]*' -prune \
                   -o -type d -print 2> /dev/null | fzf +m \
                     --preview='tree -NC -L 1 {} | head -n $FZF_PREVIEW_LINES' \
                     --preview-window='right:hidden:wrap' \
