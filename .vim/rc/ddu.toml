@@ -30,7 +30,7 @@ function! s:DduGrep(bang, path, ...)
     if a:path == "git"
         let path = systemlist('git rev-parse --show-toplevel')[0]
         if isdirectory(path)
-            let args = args + systemlist('git ls-files --full-name ' . path) + ['-e']
+            let args = args + systemlist('git ls-files --full-name --recurse-submodules ' . path) + ['-e']
         else
             let path = ""
         endif
@@ -75,7 +75,7 @@ endfunction
 
 " git ls-files
 function! s:DduGitLs()
-    let cmd = ['git', 'ls-files']
+    let cmd = ['git', 'ls-files', '--recurse-submodules']
     let path = systemlist('git rev-parse --show-toplevel')[0]
 
     call ddu#start({
