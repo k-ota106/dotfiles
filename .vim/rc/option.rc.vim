@@ -227,7 +227,20 @@ augroup vimStartup
             \   :hi clear DoubleByteSpace
     endif
 
-    au FileType qf nnoremap <buffer> p  <CR>zz<C-w>p
+    " Preview QuickFix and Location list item.
+    function! PreviewQuickFix()
+        let index = line(".") - 1
+        let list = getloclist(0)
+        if len(list) == 0
+            let list = getqflist()
+        endif
+        if len(list) > 0
+            let l = list[index]
+            exe "pedit +".l.lnum." ".fnamemodify(bufname(l.bufnr), ':p')
+        endif
+    endfunction
+    au FileType qf nnoremap <buffer> p :call PreviewQuickFix()<CR>
+    "au FileType qf nnoremap <buffer> p  <CR>zz<C-w>p
 
     let s:template_dir = $HOME."/.vim/template"
     if isdirectory(s:template_dir)

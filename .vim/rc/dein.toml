@@ -86,4 +86,5 @@ repo = 'k-ota106/vim-eda_utils'
 hook_add = '''
 let g:eda_utils_shell = 'zsh'
 let g:eda_utils_mapleader = "\<Space>"
+let g:Gtags_No_Auto_Jump = 1
 '''
