@@ -3,8 +3,10 @@ let g:previm_enable_realtime = 1
 "let g:eda_utils_disable_keymap = 1
 """""""""""""""""""""""""""""""""""""""""""""""""""
 
-" Connect clipboard and unnamed register.
-set clipboard+=unnamed
+" Connect clipboard and unnamed register (require: xclip, xsel).
+if executable('xclip') && executable('xsel')
+    set clipboard+=unnamedplus
+endif
 " When using tab in command mode to complete a filename, the first time is the
 " maximum common string, and the next time the filename is fully completed in order.
 set wildmode=longest,full
