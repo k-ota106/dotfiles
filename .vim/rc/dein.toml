@@ -68,12 +68,12 @@ vnoremap <C-p> "0p
 [[plugins]]
 repo = 'tpope/vim-fugitive'
  hook_add = '''
-function! IbexGitLab(opts)
+function! BrowseGitLab(opts)
     let remote = substitute(a:opts['remote'], "\.git$", "", "")
     let arg = remote . '/-/' . a:opts['type'] . '/' . a:opts['commit'] . '/' . a:opts['path']
     return arg
 endfunction
-let g:fugitive_browse_handlers = ['IbexGitLab'] 
+let g:fugitive_browse_handlers = ['BrowseGitLab'] 
 '''
 
 #################################### commentary
