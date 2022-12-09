@@ -68,6 +68,7 @@ repo = 'Shougo/pum.vim'
  depends = ['denops.vim']
  hook_source = '''
  "call ddc#custom#patch_global('completionMenu', 'pum.vim')
+ call ddc#custom#patch_global('ui', 'native')
  call ddc#custom#patch_global('sources', ['around', 'vsnip', 'yank', 'buffer', 'file'])
  call ddc#custom#patch_global('sourceOptions', {
       \ '_': {
@@ -98,15 +99,15 @@ repo = 'Shougo/pum.vim'
 
  "inoremap <silent><expr> <TAB>
  inoremap <silent><expr> <C-n>
-      \ ddc#map#pum_visible() ? '<C-n>' :
+      \ pum#visible() ? '<C-n>' :
       \ (col('.') <= 1 <Bar><Bar> getline('.')[col('.') - 2] =~# '\s') ?
       \ '<TAB>' : ddc#map#manual_complete()
  "inoremap <silent><expr> <TAB>
- "     \ ddc#map#pum_visible() ? '<C-n>' : 
+ "     \ pum#visible() ? '<C-n>' : 
  "     \ ((col('.') <= 1 <Bar><Bar> getline('.')[col('.') - 2] =~# '\s') <Bar><Bar> !ddc#map#can_complete()) ?
  "     \ '<TAB>' : ddc#map#manual_complete()
 
- inoremap <expr><S-TAB>  ddc#map#pum_visible() ? '<C-p>' : '<C-h>'
+ inoremap <expr><S-TAB>  pum#visible() ? '<C-p>' : '<C-h>'
 
  call ddc#enable()
  "inoremap <Tab> <Cmd>call pum#map#insert_relative(+1)<CR>
@@ -114,7 +115,7 @@ repo = 'Shougo/pum.vim'
 '''
 
 [[plugins]]
- # Source: yank history.
+ # Source: yank history. (not supporeted by ddc@3.3)
  repo = 'ippachi/ddc-yank'
  on_source = 'ddc.vim'
 
@@ -146,6 +147,10 @@ repo = 'Shougo/pum.vim'
 [[plugins]]
  # Remove duplicate completion candidates
  repo = 'Shougo/ddc-converter_remove_overlap'
+ on_source = 'ddc.vim'
+
+[[plugins]]
+ repo = 'Shougo/ddc-ui-native'
  on_source = 'ddc.vim'
 
 [[plugins]]

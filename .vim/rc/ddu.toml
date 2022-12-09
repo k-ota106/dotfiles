@@ -10,6 +10,16 @@ let s:rg_highlights = {
             \ 'word': 'DiffAdd',
             \}
 
+" get path of git root
+function! s:get_git_root()
+    for path in systemlist('git rev-parse --show-superproject-working-tree --show-toplevel')
+        if isdirectory(path)
+            break
+        endif
+    endfor
+    return path
+endfunction
+
 " interactive grep by ddu-source-rg
 " ----
 " bang:   0: ignore case
@@ -28,9 +38,9 @@ function! s:DduGrep(bang, path, ...)
     endif
 
     if a:path == "git"
-        let path = systemlist('git rev-parse --show-toplevel')[0]
+        let path = s:get_git_root()
         if isdirectory(path)
-            let args = args + systemlist('git ls-files --full-name --recurse-submodules ' . path) + ['-e']
+            let args = args + systemlist('cd '.path.'; git ls-files --full-name --recurse-submodules ') + ['-e']
         else
             let path = ""
         endif
@@ -76,7 +86,7 @@ endfunction
 " git ls-files
 function! s:DduGitLs()
     let cmd = ['git', 'ls-files', '--recurse-submodules']
-    let path = systemlist('git rev-parse --show-toplevel')[0]
+    let path = s:get_git_root()
 
     call ddu#start({
       \ 'name': 'files',
@@ -429,11 +439,11 @@ nnoremap <buffer> >
 nnoremap <buffer> <C-l>
 \ <Cmd>call ddu#ui#filer#do_action('checkItems')<CR>
 nnoremap <buffer><expr> <CR>
-\ ddu#ui#filer#is_directory() ?
+\ ddu#ui#filer#is_tree() ?
 \ "<Cmd>call ddu#ui#filer#do_action('itemAction', {'name': 'narrow'})<CR>" :
 \ "<Cmd>call ddu#ui#filer#do_action('itemAction', {'name': 'open'})<CR>"
 nnoremap <buffer><expr> l
-\ ddu#ui#filer#is_directory() ?
+\ ddu#ui#filer#is_tree() ?
 \ "<Cmd>call ddu#ui#filer#do_action('itemAction', {'name': 'narrow'})<CR>" :
 \ "<Cmd>call ddu#ui#filer#do_action('itemAction', {'name': 'open'})<CR>"
 function! ToggleHidden()

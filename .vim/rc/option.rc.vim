@@ -271,6 +271,9 @@ command! DiffOrig vert new | set bt=nofile | r ++edit # | 0d_ | diffthis | wincm
 " Copy quickfix to loclist
 command! CopyQflistToLoclist :call setloclist(0, [], ' ', {'items': get(getqflist({'items': 1}), 'items')})
 
+" Copy absolute path of the current buffer
+command! CopyPath :let @" = expand('%:p')
+
 function! s:source_rc(rc_file)
     if filereadable(a:rc_file)
         :execute 'source ' . a:rc_file

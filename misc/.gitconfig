@@ -31,12 +31,16 @@
 	ci = commit
 	br = branch
 	ls = ls-files
+    ls-dir = !"f(){ git ls-files | sed -e '/^[^\\/]*$/d' -e 's/\\/[^\\/]*$//g' | sort | uniq; }; f"
+    ls-all = ls-files --recurse-submodules
 	makers = ! makers --cwd $(git rev-parse --show-toplevel)
-	graph  = log --graph --date-order -C -M --pretty=format:\"<%h> %ad [%an] %d %s\" --all --date=short
-	graph2 = log --graph --date-order -C -M --pretty=format:\"<%h> %ad [%an] %d %s\" --date=short
+	graph  = log --graph --date-order -C -M --pretty=format:\"<%h> %ad [%an] %C(auto,cyan)%d%Creset %s\" --all --date=short
+	graph2 = log --graph --date-order -C -M --pretty=format:\"<%h> %ad [%an] %C(auto,cyan)%d%Creset %s\" --date=short
+
 	update = fetch origin 'refs/heads/*:refs/heads/*' 
     log1 = log --oneline
     log2 = log --pretty=format:\"<%h> %ad [%an] %s %d\" --date=iso # --all 
+    log3 = log --no-walk --tags --date=format:'%Y-%m-%d'  --decorate=full
     #brv = branch --format=\"%(objectname:short) %(authordate:short) %(subject) [%(HEAD)%(refname:short)]\"
     brv = branch --format=\"%(objectname:short) %(authordate) %(subject) [%(HEAD)%(refname:short)]\"
 
