@@ -58,18 +58,19 @@ repo = 'skanehira/translate.vim'
 #################################### denops & ddc
 [[plugins]]
 repo = 'vim-denops/denops.vim'
+on_event = 'VimEnter'
 
 [[plugins]]
 repo = 'Shougo/pum.vim'
 
 [[plugins]]
  repo = 'Shougo/ddc.vim'
- on_event = 'InsertEnter'
+ on_event = ['InsertEnter', 'CursorHold']
  depends = ['denops.vim']
  hook_source = '''
  "call ddc#custom#patch_global('completionMenu', 'pum.vim')
  call ddc#custom#patch_global('ui', 'native')
- call ddc#custom#patch_global('sources', ['around', 'vsnip', 'yank', 'buffer', 'file'])
+ call ddc#custom#patch_global('sources', ['around', 'vsnip', 'buffer', 'file'])
  call ddc#custom#patch_global('sourceOptions', {
       \ '_': {
       \   'matchers': ['matcher_head'],
@@ -78,7 +79,6 @@ repo = 'Shougo/pum.vim'
       \ },
       \ 'around': {'mark': 'A'},
       \ 'vsnip': {},
-      \ 'yank': {'mark': 'Y'},
       \ 'buffer': {'mark': 'B'},
       \ 'file': {
       \   'mark': 'file',
@@ -114,10 +114,10 @@ repo = 'Shougo/pum.vim'
  "inoremap <S-Tab> <Cmd>call pum#map#insert_relative(-1)<CR>
 '''
 
-[[plugins]]
- # Source: yank history. (not supporeted by ddc@3.3)
- repo = 'ippachi/ddc-yank'
- on_source = 'ddc.vim'
+#[[plugins]]
+# # Source: yank history. (not supporeted by ddc@3.3)
+# repo = 'ippachi/ddc-yank'
+# on_source = 'ddc.vim'
 
 [[plugins]]
  # Source: around from the current cursor.

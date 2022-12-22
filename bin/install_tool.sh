@@ -65,13 +65,14 @@ function install_fzf() {
 }
 
 function install_nvim() {
+    local v=v0.8.1
     if is_not_installed nvim ;then
         if [ "$(uname)" == 'Darwin' ]; then
-            curl -LO https://github.com/neovim/neovim/releases/download/v0.7.2/nvim-macos.tar.gz
+            curl -LO https://github.com/neovim/neovim/releases/download/${v}/nvim-macos.tar.gz
             tar xzf nvim-macos.tar.gz
             cp -r nvim-macos/* $HOME/.local
         else
-            curl -LO https://github.com/neovim/neovim/releases/download/v0.7.2/nvim.appimage
+            curl -LO https://github.com/neovim/neovim/releases/download/${v}/nvim.appimage
             chmod +x nvim.appimage
             ./nvim.appimage --appimage-extract
             cp -r ./squashfs-root/usr/* $HOME/.local
