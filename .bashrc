@@ -1,6 +1,7 @@
 if [[ $- == *i* ]];then
     stty stop undef
     stty erase ^H
+    #stty erase ^?
 fi
 shopt -s direxpand > /dev/null 2>&1
 shopt -s expand_aliases

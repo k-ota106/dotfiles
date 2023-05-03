@@ -1,0 +1,127 @@
+#################################### others
+[[plugins]]
+repo = 'skanehira/translate.vim'
+
+
+#################################### denops & ddc
+[[plugins]]
+repo = 'vim-denops/denops.vim'
+on_event = 'VimEnter'
+
+[[plugins]]
+repo = 'Shougo/pum.vim'
+
+[[plugins]]
+ repo = 'Shougo/ddc.vim'
+ on_event = ['InsertEnter', 'CursorHold']
+ depends = ['denops.vim']
+ hook_source = '''
+ "call ddc#custom#patch_global('completionMenu', 'pum.vim')
+ call ddc#custom#patch_global('ui', 'native')
+ call ddc#custom#patch_global('sources', ['around', 'vsnip', 'buffer', 'file'])
+ call ddc#custom#patch_global('sourceOptions', {
+      \ '_': {
+      \   'matchers': ['matcher_head'],
+      \   'sorters': ['sorter_rank'],
+      \   'converters': ['converter_remove_overlap'],
+      \ },
+      \ 'around': {'mark': 'A'},
+      \ 'vsnip': {},
+      \ 'buffer': {'mark': 'B'},
+      \ 'file': {
+      \   'mark': 'file',
+      \   'isVolatile': v:true, 
+      \   'forceCompletionPattern': '\S/\S*'
+      \ }})
+
+ call ddc#custom#patch_global('sourceParams', {
+      \ 'around': {'maxSize': 500},
+      \ 'buffer': {
+      \   'requireSameFiletype': v:false,
+      \   'limitBytes': 5000000,
+      \   'fromAltBuf': v:true,
+      \   'forceCollect': v:true,
+      \   'showBufName': v:true
+      \ },
+      \ })
+
+ "inoremap <silent><expr> <TAB>
+ inoremap <silent><expr> <C-n>
+      \ pum#visible() ? '<C-n>' :
+      \ (col('.') <= 1 <Bar><Bar> getline('.')[col('.') - 2] =~# '\s') ?
+      \ '<TAB>' : ddc#map#manual_complete()
+ "inoremap <silent><expr> <TAB>
+ "     \ pum#visible() ? '<C-n>' : 
+ "     \ ((col('.') <= 1 <Bar><Bar> getline('.')[col('.') - 2] =~# '\s') <Bar><Bar> !ddc#map#can_complete()) ?
+ "     \ '<TAB>' : ddc#map#manual_complete()
+
+ inoremap <expr><S-TAB>  pum#visible() ? '<C-p>' : '<C-h>'
+
+ call ddc#enable()
+ "inoremap <Tab> <Cmd>call pum#map#insert_relative(+1)<CR>
+ "inoremap <S-Tab> <Cmd>call pum#map#insert_relative(-1)<CR>
+'''
+
+#[[plugins]]
+# # Source: yank history. (not supporeted by ddc@3.3)
+# repo = 'ippachi/ddc-yank'
+# on_source = 'ddc.vim'
+
+[[plugins]]
+ # Source: around from the current cursor.
+ repo = 'Shougo/ddc-around'
+ on_source = 'ddc.vim'
+
+[[plugins]]
+ # Source: filename.
+ repo = 'LumaKernel/ddc-file'
+ on_source = 'ddc.vim'
+
+[[plugins]]
+ # Source: words in buffers.
+ repo = 'matsui54/ddc-buffer'
+ on_source = 'ddc.vim'
+
+[[plugins]]
+ # Filter: Target the word you are typing for completion.
+ repo = 'Shougo/ddc-matcher_head'
+ on_source = 'ddc.vim'
+
+[[plugins]]
+ # Filter: Sort completion candidates appropriately.
+ repo = 'Shougo/ddc-sorter_rank'
+ on_source = 'ddc.vim'
+
+[[plugins]]
+ # Remove duplicate completion candidates
+ repo = 'Shougo/ddc-converter_remove_overlap'
+ on_source = 'ddc.vim'
+
+[[plugins]]
+ repo = 'Shougo/ddc-ui-native'
+ on_source = 'ddc.vim'
+
+[[plugins]]
+ repo = 'hrsh7th/vim-vsnip'
+ on_event = 'InsertEnter'
+ depends = ['vim-vsnip-integ', 'friendly-snippets']
+ hook_add = '''
+ imap <expr> <C-j> vsnip#expandable() ? '<Plug>(vsnip-expand)' : '<C-j>'
+ smap <expr> <C-j> vsnip#expandable() ? '<Plug>(vsnip-expand)' : '<C-j>'
+ imap <expr> <C-f> vsnip#jumpable(1)  ? '<Plug>(vsnip-jump-next)' : '<C-f>'
+ smap <expr> <C-f> vsnip#jumpable(1)  ? '<Plug>(vsnip-jump-next)' : '<C-f>'
+ imap <expr> <C-b> vsnip#jumpable(-1) ? '<Plug>(vsnip-jump-prev)' : '<C-b>'
+ smap <expr> <C-b> vsnip#jumpable(-1) ? '<Plug>(vsnip-jump-prev)' : '<C-b>'
+ let g:vsnip_filetypes = {}
+ '''
+
+[[plugins]]
+ repo = 'hrsh7th/vim-vsnip-integ'
+
+[[plugins]]
+ repo = 'rafamadriz/friendly-snippets'
+
+#################################### Rust
+[[plugins]]
+ repo = 'rhysd/rust-doc.vim'
+

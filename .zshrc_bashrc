@@ -97,7 +97,15 @@ fi
 
 # git
 git_diff_so_fancy () { git diff $* | diff-so-fancy | less -crm; }
-git_copy_hash () { git log --graph --date-order -C -M --pretty=format:"<%h> %ad [%an] %d %s" --all --date=short | fzf | sed -e 's/>.*//' -e 's/.*<//' | winclip; }
+git_copy_hash () { git log --graph --date-order -C -M --pretty=format:"<%h> %ci [%an] %d %s" --all --date=short | fzf | sed -e 's/>.*//' -e 's/.*<//' | winclip; }
+
+gsm_list () {
+    # Show submodule's commit and name
+    git submodule | while read commit dir others ;do
+        name=$(cd $dir ; git name-rev $commit | awk '{print $2}')
+        printf "%s %-10s (%s)\n" ${commit:0:8} $dir $name
+    done
+}
 
 # gcc
 alias gcc_dbg='gcc -g -Wall -Wextra -Wformat=2 -Wstrict-aliasing=2 -Wcast-qual -Wcast-align -Wwrite-strings -Wconversion -Wfloat-equal -Wpointer-arith -Wswitch-enum -Wuninitialized -O -D_FORTIFY_SOURCE=1'

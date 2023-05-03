@@ -134,17 +134,20 @@ function install_cargo_tools() {
     fi
 
     cargo_install rg          ripgrep
-    cargo_install bat
     cargo_install fd          fd-find    
-    cargo_install delta       git-delta  
-    cargo_install makers      cargo-make 
-    cargo_install rust-script
-    cargo_install fx          felix      
 
-    set +e
-    cargo_install hyperfine
-    cargo_install btm           bottom
-    set -e
+    if [ $simple_ -eq 0 ];then
+        cargo_install bat
+        cargo_install fx          felix      
+        cargo_install makers      cargo-make 
+        cargo_install delta       git-delta  
+        cargo_install rust-script
+
+        set +e
+        cargo_install hyperfine
+        cargo_install btm           bottom
+        set -e
+    fi
 }    
 
 function install_deno() {
@@ -293,13 +296,14 @@ function update_vim() {
     make install
 }
 
-if [ "$1" == all ];then
-    all=1
-else
-    all=0
-fi
+all_=0
+simple_=0
+case "$1" in
+    all_)    all_=1;;
+    simple_) simple_=1;;
+esac
 
-if [ $all -eq 1 ];then
+if [ $all_ -eq 1 ];then
     install_package
 fi
 
@@ -308,16 +312,19 @@ install_nvim
 install_starship
 install_cargo
 install_cargo_tools
-install_deno
-install_ctags
-install_pygements
-install_globals
 
-if [ $all -eq 1 ];then
-    set +e
-    install_yad
-    install_tmux
-    set -e
+if [ $simple_ -eq 0 ];then
+    install_deno
+    install_ctags
+    install_pygements
+    install_globals
+    
+    if [ $all_ -eq 1 ];then
+        set +e
+        install_yad
+        install_tmux
+        set -e
+    fi
 fi
 
 #update_git

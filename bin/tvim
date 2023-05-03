@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Open a new buffer in a parent vim from a child vim terminal.
+# Open in the caller's vim buffer from the vim terminal
 
 if [ -p /dev/stdin -o -f /dev/stdin ]; then
     if [ -d ~/tmp ];then
@@ -16,13 +16,13 @@ else
 fi
 
 #if [ -t 0 ]; then
-#    # Stdin is a tty
+#    # When stdin is a tty
 #    ....
 #elif [ -p /dev/stdin ]; then
-#    # Stdin is a pipe
+#    # When stdin is a pipe
 #    ....
 #elif [ -f /dev/stdin ]; then
-#    # Stdin is a file
+#    # When stdin is a file
 #    ....
 #else
 #    # Otherwise

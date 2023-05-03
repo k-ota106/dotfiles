@@ -93,9 +93,9 @@ function! s:DduGitLs()
       \ 'volatile': v:true,
       \ 'sources': [{
       \   'name': 'file_external',
+      \   'options': {'path': path},
       \   'params': {
       \     'cmd': cmd,
-      \     'path': path,
       \   },
       \ }],
       \ 'uiParams': {'ff': {
