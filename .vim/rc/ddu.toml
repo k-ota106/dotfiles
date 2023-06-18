@@ -62,10 +62,9 @@ function! s:DduGrep(bang, path, ...)
     call ddu#start({
       \ 'name': 'search',
       \ 'input': input,
-      \ 'volatile': v:true,
       \ 'sources': [{
       \   'name': 'rg',
-      \   'options': {'matchers': []},
+      \   'options': {'matchers': [], 'volatile': v:true},
       \   'params': {
       \     'args': args,
       \     'highlights': s:rg_highlights,
@@ -90,10 +89,9 @@ function! s:DduGitLs()
 
     call ddu#start({
       \ 'name': 'files',
-      \ 'volatile': v:true,
       \ 'sources': [{
       \   'name': 'file_external',
-      \   'options': {'path': path},
+      \   'options': {'path': path, 'volatile': v:true},
       \   'params': {
       \     'cmd': cmd,
       \   },
@@ -365,9 +363,9 @@ nnoremap <buffer> u
 '''
 ddu-ff-filter = '''
 inoremap <buffer> <CR>
-\ <Esc><Cmd>call ddu#ui#ff#close()<CR>
-nnoremap <buffer> <CR>
-\ <Cmd>call ddu#ui#ff#close()<CR>
+\ <Esc><Cmd>call ddu#ui#do_action('closeFilterWindow')<CR>
+\ <Cmd>call ddu#ui#do_action('closeFilterWindow')<CR>
+'''
 '''
 
 [[plugins]]
@@ -439,11 +437,11 @@ nnoremap <buffer> >
 nnoremap <buffer> <C-l>
 \ <Cmd>call ddu#ui#filer#do_action('checkItems')<CR>
 nnoremap <buffer><expr> <CR>
-\ ddu#ui#filer#is_tree() ?
+\ ddu#ui#get_item()->get('isTree', v:false) ?
 \ "<Cmd>call ddu#ui#filer#do_action('itemAction', {'name': 'narrow'})<CR>" :
 \ "<Cmd>call ddu#ui#filer#do_action('itemAction', {'name': 'open'})<CR>"
 nnoremap <buffer><expr> l
-\ ddu#ui#filer#is_tree() ?
+\ ddu#ui#get_item()->get('isTree', v:false) ?
 \ "<Cmd>call ddu#ui#filer#do_action('itemAction', {'name': 'narrow'})<CR>" :
 \ "<Cmd>call ddu#ui#filer#do_action('itemAction', {'name': 'open'})<CR>"
 function! ToggleHidden()
