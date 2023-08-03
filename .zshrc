@@ -78,6 +78,7 @@ alias ss='source $HOME/.zshrc'
 source_if $HOME/.fzf.zsh
 source_if $HOME/.git-completion.bash
 source_if $HOME/.makers-completion.bash
+source_if $HOME/.zsh/zsh-autosuggestions/zsh-autosuggestions.zsh
 source_if $HOME/.zshrc_bashrc.private
 source_if $HOME/.zshrc.private
 

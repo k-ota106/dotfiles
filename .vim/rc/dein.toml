@@ -2,6 +2,10 @@
 [[plugins]]
 repo = 'vim-scripts/summerfruit256.vim'
 
+#[[plugins]]
+#repo = 'sonph/onehalf'
+#build = 'cp -r vim/* .'
+
 [[plugins]]
 repo = 'cocopon/iceberg.vim'
 hook_add = '''

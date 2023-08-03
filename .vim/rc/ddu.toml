@@ -26,21 +26,25 @@ endfunction
 " path:   "git" (repository) or "" (current directory) or PATH
 " input:  search word (<cword> if empty)
 function! s:DduGrep(bang, path, ...)
-    let args = ['--json', '-g', '!tags']
-    if a:bang == 0
-        call add(args, '--ignore-case')
-    end
-
     if a:0 == 0
         let input = expand('<cword>')
     else
         let input = a:1
     endif
 
+    let args = ['--json', '-g', '!tags']
+    if a:bang == 0
+        call add(args, '--ignore-case')
+    end
+    let paths = []
+    let source_name = 'rg'
+
     if a:path == "git"
         let path = s:get_git_root()
         if isdirectory(path)
-            let args = args + systemlist('cd '.path.'; git ls-files --full-name --recurse-submodules ') + ['-e']
+            "let paths = paths + systemlist('cd '.path.'; git ls-files --full-name --recurse-submodules ')
+            let source_name = 'gg'
+            let paths = [path]
         else
             let path = ""
         endif
@@ -53,9 +57,10 @@ function! s:DduGrep(bang, path, ...)
                 let a = a:path
             endif
             for f in split(a)
-                call add(args, f)
+                "call add(args, f)
+                call add(paths, f)
             endfor
-            call add(args, '-e')
+            "call add(args, '-e')
         endif
     endif
 
@@ -63,23 +68,20 @@ function! s:DduGrep(bang, path, ...)
       \ 'name': 'search',
       \ 'input': input,
       \ 'sources': [{
-      \   'name': 'rg',
+      \   'name': source_name,
       \   'options': {'matchers': [], 'volatile': v:true},
       \   'params': {
       \     'args': args,
       \     'highlights': s:rg_highlights,
-      \     'path': path,
+      \     'paths': paths
       \   },
       \ }],
       \ 'uiParams': {'ff': {
       \   'autoResize': v:false,
       \   'ignoreEmpty': v:false,
-      \   'startFilter': v:true,
+      \   'startFilter': v:false
       \ }},
       \})
-    :redraw
-    :call feedkeys("\<Enter>")
-    :redraw
 endfunction
 
 " git ls-files
@@ -99,7 +101,7 @@ function! s:DduGitLs()
       \ 'uiParams': {'ff': {
       \   'autoResize': v:false,
       \   'ignoreEmpty': v:false,
-      \   'startFilter': v:false,
+      \   'startFilter': v:true,
       \ }},
       \})
 endfunction
@@ -364,8 +366,8 @@ nnoremap <buffer> u
 ddu-ff-filter = '''
 inoremap <buffer> <CR>
 \ <Esc><Cmd>call ddu#ui#do_action('closeFilterWindow')<CR>
+nnoremap <buffer> <CR>
 \ <Cmd>call ddu#ui#do_action('closeFilterWindow')<CR>
-'''
 '''
 
 [[plugins]]
@@ -498,6 +500,10 @@ on_source = 'ddu.vim'
 
 [[plugins]]
 repo = 'shun/ddu-source-rg'
+on_source = 'ddu.vim'
+
+[[plugins]]
+repo = 'k-ota106/ddu-source-gg'
 on_source = 'ddu.vim'
 
 [[plugins]]

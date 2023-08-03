@@ -150,6 +150,20 @@ function install_cargo_tools() {
     fi
 }    
 
+function install_zsh_plugins() {
+    local zshdir=$HOME/.zsh
+    mkdir -p zshdir
+
+    for d in https://github.com/zsh-users/zsh-autosuggestions.git;do
+        dst=${d##*/}
+        dst=$zshdir/${dst%.git}
+        if [ ! -d $dst ];then
+            git clone --depth 1 $d $dst
+            sed -i -e "s/ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE='fg=8'/ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE='fg=244'/" $dst/zsh-autosuggestions.zsh
+        fi
+    done
+}
+
 function install_deno() {
     #if ! type $cargo > /dev/null 2>&1 ;then
     #    return
@@ -314,6 +328,7 @@ install_cargo
 install_cargo_tools
 
 if [ $simple_ -eq 0 ];then
+    install_zsh_plugins
     install_deno
     install_ctags
     install_pygements
@@ -329,3 +344,6 @@ fi
 
 #update_git
 #update_vim
+
+# mv ~/.config/nvim{,.back}
+# git clone --depth 1 https://github.com/AstroNvim/AstroNvim ~/.config/nvim
