@@ -1,7 +1,6 @@
 [[plugins]]
 repo = 'Shougo/ddu.vim'
 depends = 'denops.vim'
-on_source = 'denops.vim'
 hook_add = '''
 
 let s:rg_highlights = {
@@ -141,11 +140,14 @@ command! -nargs=? -complete=file DduFileRec call s:DduFileRec(<f-args>)
   nnoremap s<Space> <Cmd>Ddu
   \ -name=files file_rec<CR>
 
-  " List recently opend files, git files or files in the current directory
-  nnoremap ss
-  \ <Cmd>Ddu -name=files file_point file_old
-  \ `finddir('.git', ';') != '' ? 'file_external' : 'file_rec'`
-  \ -sync -ui-param-displaySourceName=short<CR>
+  "" List recently opend files, git files or files in the current directory
+  "nnoremap ss
+  "\ <Cmd>Ddu -name=files file_point file_old
+  "\ `finddir('.git', ';') != '' ? 'file_external' : 'file_rec'`
+  "\ -sync -ui-param-file_rec-displaySourceName=short<CR>
+
+  " List recently opend files.
+  nnoremap ss <Cmd>Ddu -name=files file_point file_old -sync<CR>
 
   " Grep in the current directory.
   nnoremap ;g <Cmd>DduGrep<CR>
@@ -163,26 +165,33 @@ command! -nargs=? -complete=file DduFileRec call s:DduFileRec(<f-args>)
   nnoremap ;gl <Cmd>DduGitLs<CR>
 
   " jumps, marks
-  nnoremap ;j <Cmd>Ddu marks -source-param-jumps=v:true<CR>
+  nnoremap ;j <Cmd>Ddu marks -source-param-jumps-jumps=v:true<CR>
   nnoremap ;m <Cmd>Ddu marks<CR>
+
+  " markdown 
+  nnoremap ;d <Cmd>Ddu
+      \ -name=outline markdown
+      \ -ui-param-ff-ignoreEmpty
+      \ -ui-param-ff-displayTree
+      \ <CR>
 
   " Re-open previous search.
   "nnoremap <leader>n <Cmd>Ddu
   "\ -name=search -resume<CR>
-  "\ -ui-param-startFilter=v:false<CR>
+  "\ -ui-param-ff-startFilter=v:false<CR>
   nnoremap <leader>n <Cmd>call DduResume("search")<CR>
 
   " Command history.
   nnoremap ;h <Cmd>Ddu
-  \ -name=history command_history -ui-param-startFilter<CR>
+  \ -name=history command_history -ui-param-ff-startFilter=v:true<CR>
 
   " Register search.
   nnoremap ;r <Cmd>Ddu
-  \ -buffer-name=register register
-  \ -ui-param-autoResize<CR>
+  \ -name=register register
+  \ -ui-param-ff-autoResize<CR>
   xnoremap <expr> ;r (mode() ==# 'V' ? '"_R<Esc>' : '"_d') .
-  \ '<Cmd>Ddu -buffer-name=register register
-  \  -source-option-defaultAction=insert -ui-param-autoResize<CR>'
+  \ '<Cmd>Ddu -name=register register
+  \  -source-option-register-defaultAction=insert -ui-param-ff-autoResize<CR>'
 '''
 hook_source = '''
 call ddu#custom#alias('source', 'file_rg', 'file_external')
@@ -299,7 +308,7 @@ repo = 'Shougo/ddu-ui-ff'
 on_source = 'ddu.vim'
 hook_add = '''
 function! s:DduFiler(...)
-  let args = "Ddu -name=fileter-" . win_getid() . " -ui=filer -source-option-columns=filename"
+  let args = "Ddu -name=filer-" . win_getid() . " -ui=filer -source-option-file-columns=filename"
   if a:0 == 0
     let path = fnamemodify(bufname('%'), ':p:h')
     if !isdirectory(path)
@@ -308,7 +317,7 @@ function! s:DduFiler(...)
   else
     let path  = fnamemodify(a:1, ":p:h")
   endif
-  let args = args . " -source-option-path=" . path . " file"
+  let args = args . " -source-option-file-path=" . path . " file"
   execute args
 endfunction
 
@@ -500,6 +509,10 @@ on_source = 'ddu.vim'
 
 [[plugins]]
 repo = 'shun/ddu-source-rg'
+on_source = 'ddu.vim'
+
+[[plugins]]
+repo = 'mikanIchinose/ddu-source-markdown'
 on_source = 'ddu.vim'
 
 [[plugins]]
