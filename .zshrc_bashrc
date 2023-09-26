@@ -40,6 +40,11 @@ if [ -f $HOME/.dircolors -a "$(command -v dircolors)" != "" ];then
     eval $(dircolors -b $HOME/.dircolors)
 fi
 
+if [ -d $HOME/.local/go/bin ];then
+    PATH+=:$HOME/.local/go/bin
+fi
+
+
 ####################################################################################### alias
 
 alias h='history | uniq -f 2'

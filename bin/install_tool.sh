@@ -310,6 +310,16 @@ function update_vim() {
     make install
 }
 
+function install_go() {
+    if is_not_installed go;then
+        if [ ! -d $HOME/.local/go ];then
+            wget https://go.dev/dl/go1.20.7.linux-amd64.tar.gz
+            tar -C ~/.local -xzf go1.20.7.linux-amd64.tar.gz
+            # PATH+=:$HOME/.local/go/bin
+        fi
+    fi
+}
+
 all_=0
 simple_=0
 case "$1" in
