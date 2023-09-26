@@ -274,6 +274,15 @@ command! CopyQflistToLoclist :call setloclist(0, [], ' ', {'items': get(getqflis
 " Copy absolute path of the current buffer
 command! CopyPath :let @" = expand('%:p')
 
+" Show oldfiles in a new buffer
+command! Oldfiles :redir @">|silent oldfiles |redir END|enew|:set buftype=nofile|silent put
+
+" Show marks in a new buffer
+command! Marks    :redir @">|silent marks    |redir END|enew|:set buftype=nofile|silent put
+
+" Show jumps in a new buffer
+command! Jumps    :redir @">|silent jumps    |redir END|enew|:set buftype=nofile|silent put
+
 function! s:source_rc(rc_file)
     if filereadable(a:rc_file)
         :execute 'source ' . a:rc_file
