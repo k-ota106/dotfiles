@@ -10,7 +10,12 @@ set scrolloff=1
 " Keep column position when page scroll
 set nostartofline
 
+" Command history
 set history=1000
+
+" oldfiles
+set viminfo+='1000
+set viminfo-='100
 
 " Highligh parenthesis for 1 seconds
 set showmatch
@@ -217,12 +222,12 @@ augroup vimStartup
     au BufEnter * set suffixesadd=.v,.sv,.svh,.c,.cpp,.h,.e,.rb,.sfc,.tsv,.py
 
     if has("syntax") && !exists('g:vscode')
-        " Mark full-width space (　,\u3000), non-break space( , \u00a0)
+        " Mark full-width space (　,\u3000), non-break space( , \u00a0), hyphen(‐, \u2010..\uff70)
         autocmd WinEnter,BufEnter,VimEnter,ColorScheme *
             \   :hi default DoubleByteSpace ctermbg=darkgray guibg=darkgray
             \ | :hi default ExtraWhitespace ctermbg=darkmagenta guibg=darkmagenta
             \ | :call matchadd('DoubleByteSpace', "　")
-            \ | :call matchadd('ExtraWhitespace', "[\u2000-\u200B\u00a0]")
+            \ | :call matchadd('ExtraWhitespace', "[\u2000-\u200B\u00a0\u2010-\u2015\u2212\uff70]")
         autocmd WinEnter,BufEnter,VimEnter,ColorScheme *.txt,*.md,TODO,README
             \   :hi clear DoubleByteSpace
     endif
@@ -275,10 +280,10 @@ command! CopyQflistToLoclist :call setloclist(0, [], ' ', {'items': get(getqflis
 command! CopyPath :let @" = expand('%:p')
 
 " Show oldfiles in a new buffer
-command! Oldfiles :redir @">|silent oldfiles |redir END|enew|:set buftype=nofile|silent put
+command! Oldfiles :redir @">|silent oldfiles |redir END|enew|:set buftype=nofile|silent put|normal gg2dd4l
 
 " Show marks in a new buffer
-command! Marks    :redir @">|silent marks    |redir END|enew|:set buftype=nofile|silent put
+command! Marks    :redir @">|silent marks    |redir END|enew|:set buftype=nofile|silent put|normal gg2dd2j4w
 
 " Show jumps in a new buffer
 command! Jumps    :redir @">|silent jumps    |redir END|enew|:set buftype=nofile|silent put
