@@ -1,0 +1,3 @@
+* CapsLock(Left) => ESC
+* Alt(Left) => ESC
+* Non-Convert(Left) => Alt(Left) 
