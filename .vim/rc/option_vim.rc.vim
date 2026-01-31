@@ -26,3 +26,30 @@ for c in ['h', 'j', 'k', 'l']
 endfor
 set timeout ttimeoutlen=50
 endif
+
+" Don't automatically close terminal
+augroup VimTerminalModifiable
+  autocmd!
+  autocmd BufEnter * call s:MakeTerminalModifiable()
+  autocmd TerminalWinOpen * if &buftype ==# 'terminal'| setlocal ambiwidth=single
+
+augroup END
+
+function! s:MakeTerminalModifiable() abort
+  if &buftype !=# 'terminal'
+    setlocal ambiwidth=double
+    return
+  endif
+  setlocal ambiwidth=single
+
+  let job = term_getjob(bufnr())
+  if job == v:null
+    return
+  endif
+
+  if job_status(job) ==# 'dead'
+    setlocal modifiable
+    setlocal noreadonly
+  endif
+endfunction
+

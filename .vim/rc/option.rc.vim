@@ -70,6 +70,10 @@ if !has('win32')
     set shell=/bin/bash
 endif
 
+" Completion
+set complete+=k
+set dictionary=~/.vimdict,.vimdict
+
 " Search tags in parent da directory. 
 set tags=./tags;,tags
 
@@ -166,6 +170,7 @@ augroup end
 if executable('chrome.exe')
     " Use google-chrome.
     let g:netrw_browsex_viewer='chrome.exe'
+    command! -nargs=1 OpenBrowser :!chrome.exe <f-args> | echo "chrome.exe " <f-args>
 endif
 
 " Use ripgrep.
@@ -224,12 +229,21 @@ augroup vimStartup
     if has("syntax") && !exists('g:vscode')
         " Mark full-width space (　,\u3000), non-break space( , \u00a0), hyphen(‐, \u2010..\uff70)
         autocmd WinEnter,BufEnter,VimEnter,ColorScheme *
-            \   :hi default DoubleByteSpace ctermbg=darkgray guibg=darkgray
+            \ if &buftype !=# 'terminal'
+            \ | :hi default DoubleByteSpace ctermbg=darkgray guibg=darkgray
             \ | :hi default ExtraWhitespace ctermbg=darkmagenta guibg=darkmagenta
             \ | :call matchadd('DoubleByteSpace', "　")
             \ | :call matchadd('ExtraWhitespace', "[\u2000-\u200B\u00a0\u2010-\u2015\u2212\uff70]")
+            \ | :call matchadd('ExtraWhitespace', '\s\+$')
+            \ | else
+            \ |   silent! call clearmatches()
+            \ | endif
         autocmd WinEnter,BufEnter,VimEnter,ColorScheme *.txt,*.md,TODO,README
-            \   :hi clear DoubleByteSpace
+            \ if &buftype !=# 'terminal'
+            \ | :hi clear DoubleByteSpace
+            \ | else
+            \ |   silent! call clearmatches()
+            \ | endif
     endif
 
     " Preview QuickFix and Location list item.
@@ -288,6 +302,28 @@ command! Marks    :redir @">|silent marks    |redir END|enew|:set buftype=nofile
 " Show jumps in a new buffer
 command! Jumps    :redir @">|silent jumps    |redir END|enew|:set buftype=nofile|silent put
 
+" Send selected text to the above tmux pane.
+function! SendToUpperPane()
+    " Copy to clipboard.
+    normal! "+y
+    " Send to tmux buffer
+    '<,'>w !tmux load-buffer -
+    " Remove selected
+    "normal! gvd
+    " Copy selected
+    normal! gvy
+    " Paste to the above pane.
+    silent !tmux paste-buffer -t '{up-of}'
+    " Send 'Enter' to the above pane.
+    "silent !tmux send-keys -t '{up-of}' C-m
+    " Move to the above pane.
+    silent !tmux select-pane -t '{up-of}'
+    redraw!
+endfunction
+
+vnoremap <leader>s :<C-u>call SendToUpperPane()<CR>
+
+" source setting file
 function! s:source_rc(rc_file)
     if filereadable(a:rc_file)
         :execute 'source ' . a:rc_file

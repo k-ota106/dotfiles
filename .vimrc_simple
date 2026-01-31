@@ -1,3 +1,10 @@
+set nocompatible
+"colorscheme murphy
+"colorscheme evening
+colorscheme habamax
+syntax enable
+let g:denops#disabled = 1
+
 if exists('g:_rc_root_dir_')
     let s:rc_root_dir = g:_rc_root_dir_
 else

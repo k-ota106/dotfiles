@@ -45,6 +45,7 @@ repo = 'Shougo/pum.vim'
       \ },
       \ })
 
+ if exists("g:denops#disabled") && g:denops#disabled == 0
  "inoremap <silent><expr> <TAB>
  inoremap <silent><expr> <C-n>
       \ pum#visible() ? '<C-n>' :
@@ -56,6 +57,7 @@ repo = 'Shougo/pum.vim'
  "     \ '<TAB>' : ddc#map#manual_complete()
 
  inoremap <expr><S-TAB>  pum#visible() ? '<C-p>' : '<C-h>'
+ endif
 
  call ddc#enable()
  "inoremap <Tab> <Cmd>call pum#map#insert_relative(+1)<CR>

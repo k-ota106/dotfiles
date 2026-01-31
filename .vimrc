@@ -24,3 +24,7 @@ call s:source_rc('plugins.private.vim')
 if isdirectory(s:rc_root_dir.'/doc')
     execute ':helptags '.s:rc_root_dir.'/doc'
 endif
+
+nnoremap <Nul> <Nop>
+inoremap <Nul> <Nop>
+

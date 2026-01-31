@@ -75,9 +75,17 @@ repo = 'tpope/vim-fugitive'
 function! BrowseGitLab(opts)
     let remote = substitute(a:opts['remote'], "\.git$", "", "")
     let arg = remote . '/-/' . a:opts['type'] . '/' . a:opts['commit'] . '/' . a:opts['path']
+    let arg = substitute(arg, '^git@\([^:]*\):', 'http://\1/', '')
     return arg
 endfunction
 let g:fugitive_browse_handlers = ['BrowseGitLab'] 
+
+if executable('chrome.exe')
+    let g:openbrowser_browser_commands = [
+        \   {'name': 'chrome.exe',
+        \    'args': ['chrome.exe', '{uri}']}
+        \]
+endif
 '''
 
 #################################### commentary
@@ -92,3 +100,19 @@ let g:eda_utils_shell = 'zsh'
 let g:eda_utils_mapleader = "\<Space>"
 let g:Gtags_No_Auto_Jump = 1
 '''
+
+##################################### Edit quickfix and replace
+#[[plugins]]
+#repo = 'itchyny/vim-qfedit'
+#
+#[[plugins]]
+#repo = 'thinca/vim-qfreplace'
+
+#################################### ctags viewer
+[[plugins]]
+repo = 'majutsushi/tagbar'
+hook_add = '''
+nmap <F3> :TagbarShowTag<CR>
+nmap <F4> :TagbarToggle<CR>
+'''
+

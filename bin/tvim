@@ -12,7 +12,7 @@ elif [ -f "$1" ];then
     src=$(readlink -f $1)
     echo -e "\x1b]51;[\"drop\",\"$src\"]\x07"
 else
-    vim $*
+    vim "$@"
 fi
 
 #if [ -t 0 ]; then

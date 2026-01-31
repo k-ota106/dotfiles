@@ -15,7 +15,7 @@ fi
 
 export BAT_STYLE=changes,header,rule,numbers,snip
 export EDITOR=nvim
-export LD_LIBRARY_PATH=$HOME/.local/lib:${LD_LIBRARY_PATH:+:${LD_LIBRARY_PATH}}
+export LD_LIBRARY_PATH=$HOME/.local/lib${LD_LIBRARY_PATH:+:${LD_LIBRARY_PATH}}
 export LESS="-i" # less option
 export MANPATH=$HOME/.local/share/man:$HOME/.fzf/man:$MANPATH
 export PYTHONSTARTUP=$HOME/.pythonstartup
@@ -115,4 +115,15 @@ gsm_list () {
 # gcc
 alias gcc_dbg='gcc -g -Wall -Wextra -Wformat=2 -Wstrict-aliasing=2 -Wcast-qual -Wcast-align -Wwrite-strings -Wconversion -Wfloat-equal -Wpointer-arith -Wswitch-enum -Wuninitialized -O -D_FORTIFY_SOURCE=1'
 alias valgrind_dbg='valgrind --leak-check=full --leak-resolution=high --show-reachable=yes --track-origins=yes'	# -v
+
+# cd using yazi
+if [ "$(command -v yazi)" != "" ];then
+    function ycd() {
+        local tmp="$(mktemp -t "yazi-cwd.XXXXXX")" cwd
+        yazi "$@" --cwd-file="$tmp"
+        IFS= read -r -d '' cwd < "$tmp"
+        [ -n "$cwd" ] && [ "$cwd" != "$PWD" ] && builtin cd -- "$cwd"
+        rm -f -- "$tmp"
+    }
+fi
 

@@ -1,4 +1,4 @@
-"set mouse=
+set mouse=
 let g:previm_enable_realtime = 1
 "let g:eda_utils_disable_keymap = 1
 """""""""""""""""""""""""""""""""""""""""""""""""""
@@ -35,7 +35,37 @@ augroup nvimStartup
 
     " Start terminal with insert mode.
     autocmd! TermOpen * setlocal statusline=%{b:term_title}
+        \ | :call clearmatches()
+        \ | setlocal ambiwidth=single
     autocmd  TermOpen term://* startinsert
+    autocmd BufEnter * call s:MakeTerminalModifiable()
     "autocmd! BufEnter * if &buftype == 'terminal' | :startinsert | endif
 augroup END 
+
+" Don't automatically close terminal
+function! s:MakeTerminalModifiable() abort
+  "echom "MakeTerminalModifiable buftype=" . &buftype . " exists(terminal_job_id)=" .  exists('b:terminal_job_id')
+  if &buftype ==# 'nofile'
+    setlocal ambiwidth=single
+  else
+    silent! setlocal ambiwidth=double
+  endif
+
+  if &buftype !=# 'terminal' || !exists('b:terminal_job_id')
+    return
+  endif
+
+  "echom jobwait([b:terminal_job_id], 0)
+  if jobwait([b:terminal_job_id], 0) == [-3]
+    echom "change terminal state"
+    "setlocal modifiable
+    "setlocal noreadonly
+    let lines = getline(1, '$')
+    bwipeout!
+    new
+    setlocal buftype=nofile bufhidden=hide noswapfile
+    call setline(1, lines)
+    setlocal modifiable
+  endif
+endfunction
 

@@ -1,0 +1,38 @@
+#[[plugins]]
+#repo = 'nvim-treesitter/nvim-treesitter'
+#merged = 0
+#hook_post_update = 'TSUpdate'
+#hook_source = 'source ~/.config/nvim/plugins/nvim-treesitter.lua'
+#  
+#[[plugins]]
+#repo = 'hrsh7th/nvim-cmp'
+#merged = 0
+#hook_source = 'source ~/.config/nvim/plugins/nvim-cmp.lua'
+#
+#[[plugins]]
+#repo = 'ray-x/cmp-treesitter'
+#depends = ['nvim-cmp']
+
+#[[plugins]]
+#repo = 'https://github.com/simrat39/symbols-outline.nvim'
+# hook_add = '''
+# lua require("symbols-outline").setup()
+#'''
+
+[[plugins]]
+repo = 'https://github.com/hedyhli/outline.nvim'
+hook_add = '''
+    lua require("outline").setup({outline_items = {auto_update_events = { follow = { "CursorMoved", "CursorMovedI" }, }, }, })
+'''
+
+#################### Claude Code
+[[plugins]]
+repo = 'folke/snacks.nvim'
+
+[[plugins]]
+repo = 'https://github.com/coder/claudecode.nvim'
+hook_post_source = '''
+lua require('claudecode_conf')
+command! -nargs=0 Claude :setlocal ambiwidth=single | :ClaudeCode
+'''
+

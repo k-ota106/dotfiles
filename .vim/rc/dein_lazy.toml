@@ -50,3 +50,7 @@ let g:quickrun_config = {
  set foldlevel=6
 '''
 
+#################################### gdb
+#[[plugins]]
+# repo = 'puremourning/vimspector'
+
